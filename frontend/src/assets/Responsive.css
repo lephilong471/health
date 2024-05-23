@@ -1,0 +1,42 @@
+@media screen and (max-width:815px){
+    .headerContent > a:nth-of-type(1){
+        display:none;
+    }
+}
+
+@media screen and (max-width:690px){
+    .headerContent > a{
+        display:none;
+    }
+
+
+    .headerLogo{
+        width:180px;
+    }
+}
+
+
+@media screen and (max-width:450px){
+    .headerContent input, .searchIcon{
+        display:none;
+    }
+
+    .header{
+        justify-content: space-around;
+    }
+
+    .footer > div:nth-child(2), .footer > div:nth-child(3){
+        display:none;
+    }
+
+    .file-card{
+        width:100% !important;
+    }
+}
+
+
+
+
+
+
+

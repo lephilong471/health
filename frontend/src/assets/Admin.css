@@ -1,0 +1,115 @@
+.admin-background{
+    background: rgb(198,248,255);
+    background: linear-gradient(135deg, rgba(198,248,255,1) 0%, rgba(255,206,206,1) 100%);
+    width:100vw;
+    height:100vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-login-form{
+    font-family: 'Pacifico';
+    width:400px;
+    height:280px;
+    background:#ffffff;
+    border-radius:10px;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    flex-direction: column;
+}
+.admin-login-form .header-logo{
+    bottom:10px;
+    position:relative;
+}
+.admin-login-form .input{
+    margin:5px;
+    width: 290px;
+    height: 50px;
+    border: 1px solid #DFDFDF;
+    border-radius:10px;
+    padding: 0 20px;
+    font-size:20px;
+}
+
+.admin-login-form .login-btn{
+    background: linear-gradient(90deg, rgba(198,248,255,1) 0%, rgba(255,206,206,1) 100%);
+    width: 100px;
+    border: 1px solid #DFDFDF;
+    border-radius: 10px;
+    font-size: 20px;
+    padding:5px 0;
+    margin-top:20px;
+}
+
+.admin-header{
+    top:0;
+    width:100vw;
+    height:60px;
+    position:fixed;
+    background: #000000;
+    display:flex;
+    z-index:10;
+}
+
+.admin-header-content{
+    width:calc(100vw - 280px);
+    display:flex;
+    justify-content: end;
+    align-items:center;
+}
+
+.admin-header-content .logout{
+    color:#ffffff;
+    right: 20px;
+    position:relative;
+    font-size: 25px;
+}
+
+.admin-header-content .logout:hover{
+    color:orange;
+    cursor:pointer;
+}
+
+.list-product-item{
+    display:flex;
+    justify-content: space-around;
+    margin:20px;
+    border: 1px solid #DFDFDF;
+    width:640px;
+    display:flex;
+    align-items:center;
+}
+
+.list-product-item img{
+    margin:5px 0;
+    width:120px;
+    height:100px;
+}
+
+.modal-edit-body div{
+    margin:20px 0;
+}
+
+.modal-edit-body div textarea{
+    width:100%;
+}
+
+.add-icon{
+    margin-top:10px;
+    display:flex;
+    justify-content:center;
+    cursor:pointer;
+}
+
+.add-icon img{
+    margin-right:10px;
+}
+
+.add-icon:hover{
+    color:green;
+    font-weight:bold;
+    font-style:italic;
+}
+

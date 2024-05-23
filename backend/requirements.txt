@@ -1,0 +1,5 @@
+mysql.connector
+flask_cors
+flask_dropzone
+flask_jwt_extended
+bcrypt
