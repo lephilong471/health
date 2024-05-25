@@ -113,3 +113,45 @@
     font-style:italic;
 }
 
+.chat-room{
+    padding:40px;
+    display:flex;
+    justify-content:space-around;
+    width:500px;
+    border: 1px solid #000000;
+    border-radius:10px;
+    box-shadow: 2px 2px 0 2px #DFDFDF;
+}
+
+.noreply-count{
+    position: absolute;
+    width:20px;
+    height:20px;
+    top:-5px;
+    right:-5px;
+    border-radius:100%;
+    font-size:12px;
+    font-weight:bold;
+    background-color:aliceblue;
+    border: 1px solid #000000;
+}
+
+.reply-icon:hover{
+    cursor:pointer;
+    font-size:20px;
+}
+
+.reply-modal{
+    display:flex !important;
+    justify-content:center;
+}
+.reply-modal .modal-dialog{
+    width:80%;
+    position:absolute;
+    bottom:10px;
+}
+
+.reply-modal .modal-dialog input{
+    width:300px;
+    padding:10px;
+}
