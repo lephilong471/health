@@ -42,15 +42,19 @@
   background: rgb(194,250,237);
   background: linear-gradient(135deg, rgba(194,250,237,1) 0%, rgba(255,233,191,1) 50%, rgba(227,229,245,1) 100%);
   width: 280px;
-  height:calc(100vh - 100px);
+  height:calc(100vh - 110px);
   display:flex;
   justify-content:center;
   position:fixed;
-  top:50px;
+  top:60px;
   transition: 350ms;
   z-index: 10;
   left:0;
   overflow-y:scroll;
+}
+
+.sidebarNav::-webkit-scrollbar{
+  width:0px;
 }
 
 .sidebarWrap{
@@ -104,7 +108,7 @@
 
 .collapseNav{
   position:fixed;
-  top:50px;
+  top:60px;
   background: rgb(194,250,237);
   background: linear-gradient(135deg, rgba(194,250,237,1) 0%, rgba(255,233,191,1) 50%, rgba(227,229,245,1) 100%);
   width:60px;
@@ -177,7 +181,7 @@
   text-align:center;
   border: 1px solid #DBDBDB;
   border-radius:12px;
-  padding: 4px 0;
+  padding: 4px 35px 4px 0px;
   width: 220px;
 }
 
@@ -356,11 +360,12 @@
 }
 
 .welcome-container .welcome-title{
-  background-image:linear-gradient(135deg, rgba(255,181,94,1) 0%, rgba(255,104,104,1) 100%);
+  background-image:linear-gradient(0deg, rgba(255,181,94,1) 0%, rgba(255,104,104,1) 100%);
   color:transparent;
   background-clip:text;
   font-family: 'Pacifico';
   font-size:60px;
+  text-shadow: 2px 2px;
 }
 
 @keyframes pop{
@@ -451,9 +456,12 @@
   padding:20px;
   border-radius:20px;
   background: radial-gradient(circle, #FFF9FD, #FFFDD9);
+  min-height: calc(100vh - 250px) !important;
 }
 
 .client-message{
+  word-break: break-word;
+  max-width:300px;
   margin:10px;
   padding:10px;
   background: rgb(255,243,235);
@@ -464,6 +472,8 @@
 }
 
 .admin-message{
+  max-width:300px;
+  word-break: break-word;
   margin:10px;
   padding:10px;
   background: rgb(255,219,211);
@@ -471,4 +481,34 @@
   border-radius:20px;
   border:2px solid #000000;
   text-align:left;
+}
+
+.chat-input .chat-exit{
+  transform:rotateY(180deg);
+  font-size:20px;
+  margin: 0 10px;
+}
+
+.chat-input .chat-exit:hover{
+  color:lightseagreen;
+  cursor:pointer;
+}
+
+.chat-input-message{
+  resize:none;
+  outline:none;
+  height: 40px;
+  max-height: 100px;
+  width:300px;
+  padding: 10px;
+  border-radius:10px;
+  border: 2px solid #000000;
+}
+
+.chat-input-message::-webkit-scrollbar{
+  width:0px;
+}
+
+.deleteIcon:hover{
+  cursor:pointer;
 }

@@ -279,6 +279,7 @@ def client_get_message(clientID):
     data = []
     for i in cursor.fetchall():
         data.append({
+            'id': i[0],
             'client_message': i[2],
             'admin_message': i[3]
         })
@@ -296,6 +297,47 @@ def client_send_message():
     mysql.commit()
     cursor.close()
     return jsonify({'msg': 'Client Add Message Successfully!'}), 200
+
+@app.route('/api/admin/get-chat-clientID', methods=['GET'])
+@jwt_required()
+def admin_get_chat_clientID():
+    cursor = mysql.cursor()
+    cursor.execute("SELECT DISTINCT(clientID) FROM support")
+    clientIDs = cursor.fetchall()
+    data = []
+    for clientID in clientIDs:
+        cursor.execute("SELECT * FROM support WHERE admin_message IS NULL AND clientID = '"+clientID[0]+"'")
+        data.append({
+            'clientID':clientID[0],
+            'noreply': len(cursor.fetchall())
+            }
+        )
+    
+    cursor.close()
+    return data
+
+@app.route('/api/admin/send-message', methods=['POST'])
+@jwt_required()
+def admin_send_message():
+    admin_message = str(request.json['admin_message'])
+    reply_id = str(request.json['reply_id'])
+    
+    cursor = mysql.cursor()
+    cursor.execute("UPDATE support SET admin_message = '"+admin_message+"', updated_at = '"+ str(datetime.now())+"' WHERE id ='"+reply_id+"'")
+    mysql.commit()
+    cursor.close()
+
+    return jsonify({'msg':'Updated Successfully!'}), 200
+
+@app.route('/api/admin/delete-room', methods=['POST'])
+@jwt_required()
+def admin_delete_room():
+    clientID = request.json['clientID']
+    cursor = mysql.cursor()
+    cursor.execute("DELETE FROM support WHERE clientID ='"+clientID+"'")
+    mysql.commit()
+    cursor.close()
+    return jsonify({'msg': 'Delete Room Successfully'}), 200
 
 @app.route('/test', methods=['GET'])
 @jwt_required()

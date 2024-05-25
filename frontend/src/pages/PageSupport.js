@@ -4,7 +4,8 @@ import {config, containsSpecialChars} from '../config'
 import { RiSendPlaneFill } from "react-icons/ri";
 import { VscAccount } from "react-icons/vsc";
 import { BiSupport } from "react-icons/bi";
-
+import { ImExit } from "react-icons/im";
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const PageSupport = () => {
@@ -14,6 +15,10 @@ const PageSupport = () => {
     const [check, setCheck] = useState(false)
     const [messageData, setMessageData] = useState([{}])
     const [messageSend, setMessageSend] = useState('')
+    const navigate = useNavigate()
+    
+    const CIM = document.querySelector('.chat-input-message')
+    const CB = document.querySelector('.chat-content')
 
     useEffect(() => {
         if(checkID === null) setModal(true)
@@ -34,7 +39,8 @@ const PageSupport = () => {
 
     const handleChange = (event) => {
         const value =event.target.value
-        if(value === '' || value.includes(' ') || containsSpecialChars(value)) setCheck(true)
+        
+        if(value === null || value === '' || value.includes(' ') || containsSpecialChars(value)) setCheck(true)
         else {
             setCheck(false)
             setCode(value)
@@ -42,9 +48,8 @@ const PageSupport = () => {
     }
 
     const handleSubmit = () => {
-        if(check) alert('Mã đang chứa các kí tự đặc biệt và khoảng trắng')
+        if(check || !code) alert('Mã không hợp lệ')
         else{
-            localStorage.removeItem('ClientID')
             localStorage.setItem('ClientID',code)
             setModal(false)
         }
@@ -55,16 +60,45 @@ const PageSupport = () => {
         else{
             axios.post(`${config.proxy}/api/client/send-message`,
             {
-                clientID: code,
+                clientID: checkID,
                 message: messageSend
             }).then(function(response){
                 if(response.status === 200) {
                     setMessageSend('')
                     fetchMessage()
+                    CIM.style.height = '40px'
+                    CB.style.height = 'calc(100vh - 200px)'
                 }
             })
         }
     }
+
+    const handleExit = () => {
+        localStorage.removeItem('ClientID')
+        navigate('/pages/support')
+    }
+
+    const inputMessage = (event) => {
+        if(CIM !== null && CB !== null){
+            CIM.addEventListener('keyup', e => {
+                if(e.target.value !== '')
+                {
+                    let scHeight = e.target.scrollHeight
+                    console.log(scHeight)
+                    CIM.style.height = `${scHeight}px`
+                    CB.style.height = `calc(100vh - 200px - ${scHeight}px + 44px`
+                }
+                else{
+                    CIM.style.height = '40px'
+                    CB.style.height = 'calc(100vh - 200px)'
+                }
+
+            })
+        }
+        
+        setMessageSend(event.target.value)
+    }
+
     return (
         <>
             {checkID === null ? (
@@ -74,8 +108,8 @@ const PageSupport = () => {
                 </Modal.Header>
 
                 <Modal.Body className="d-flex align-items-center">
-                    <div>
-                        <input type = "text" name="code" placeholder="Nhập mã" onChange={handleChange}/>
+                    <div className="w-50">
+                        <input type = "text" name="code" className="p-1" placeholder="Nhập mã" onChange={handleChange}/>
                         {check && (<div className="text-danger fst-italic">Mã không chứa khoảng trắng và các ký tự đặc biệt</div>)}
                     </div>
         
@@ -90,6 +124,9 @@ const PageSupport = () => {
             ):(
                 <div className="chat-background">
                     <div className="chat-content">
+                        <div className="d-flex align-items-center justify-content-end">
+                            <span className="admin-message">Bạn có thể đặt câu hỏi tại đây</span> <BiSupport size={25}/>
+                        </div>   
                         {messageData.map((item, index) => {
                             return (
                                 <>
@@ -109,8 +146,8 @@ const PageSupport = () => {
                         })}
                     </div>
                     <div className="chat-input">
-                        <input type="text" name="message" value={messageSend}onChange={(e)=>setMessageSend(e.target.value)} placeholder="Nhập tin nhắn"/>
-
+                        <ImExit className="chat-exit" onClick={handleExit}/>
+                        <textarea type="text" className="chat-input-message" value={messageSend} name="message" onChange={inputMessage} placeholder="Nhập tin nhắn"/>
                         <RiSendPlaneFill className="send-icon" onClick={handleSend}/>
                     </div>
                 </div>

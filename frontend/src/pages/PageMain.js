@@ -28,18 +28,18 @@ const PageMain = ({component}) => {
         return () => clearInterval(t)
 
     },[])
-    // const background = {
-    //     // background: "rgb(243,237,254)",
-    //     background: "linear-gradient(-45deg, rgba(243,237,254,1) 0%, rgba(152,255,212,1) 75%, rgba(177,255,223,1) 88%, rgba(243,237,254,1) 100%)"
-    // }
+
+    const background = {
+        background: "linear-gradient(135deg, rgba(255,236,214,1) 0%, rgba(255,248,248,1) 25%, rgba(255,248,248,1) 75%, rgba(255,205,205,1) 100%)"
+    }
     return (
         <>
          <Header />
-          <div className="pageContent">
+          <div className="pageContent" style={(location.pathname === '/' || location.pathname === '/pages/support') ? background:null}>
               <Sidebar />
               {welcome && (
                 <div className="welcome-container">
-                    <div className="welcome-title">Welcome to Bacsie.com</div>
+                    <div className="welcome-title"><div>Xin chào</div></div>
                     <div className="container">
                         <div className="row my-1">
                             <div className="col-lg-6 col-12 my-1 d-flex justify-content-lg-end justify-content-center">
@@ -70,6 +70,7 @@ const PageMain = ({component}) => {
                             </div>
                         </div>
                     </div>
+                    {/* <img src={`${config.image_path}/images/safe.gif`} style={{backgroundColor:"transparent"}} alt=''/> */}
                 </div>
               )}
               {component}
