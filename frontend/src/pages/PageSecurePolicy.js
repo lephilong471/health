@@ -2,7 +2,7 @@ import React from 'react'
 
 export const PageSecurePolicy = () => {
     return (
-        <div className="text-start m-4 fs-6">
+        <div className="text-start m-4 fs-5">
             <div>
                 <h3 style={{fontFamily: 'Pacifico'}}>Thông tin nào được lấy từ người dùng ?</h3>
                 <ul>

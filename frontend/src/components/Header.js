@@ -1,10 +1,10 @@
-import React, {useState} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import {SearchResult} from './SearchResult'
 import SearchBar from './SearchBar'
 import { config } from '../config'
+
 const Header = () => {
-    
     const [result, setResult] = useState([])
 
     return (
@@ -17,7 +17,7 @@ const Header = () => {
             <div className="headerContent">
                 <Link className="headerItem" to="/pages/about"> Về bacsie.com</Link>
                 <Link className="headerItem" to="/pages/info"> Thông tin khám </Link>
-                <div className="d-flex flex-nowrap">
+                <div className="d-flex flex-nowrap justify-content-center">
                     <SearchBar setResult = {setResult}/>
                     <SearchResult result = {result}/>                    
                 </div>

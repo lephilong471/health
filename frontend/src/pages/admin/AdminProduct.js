@@ -218,7 +218,13 @@ const AdminProduct = () => {
                         <b>Đường dẫn: </b><input type="text" name="path" value={edit.path} onChange={changeFormEdit}/>
                     </div>
                     <div>
-                        <b>Loại: </b><input type="text" name="type" value={edit.type} onChange={changeFormEdit}/>
+                        <b>Loại: </b>
+                        <select name="type" value={edit.type} onChange={changeFormEdit}>
+                            <option value="0">Nhãn khoa</option>
+                            <option value="1">Nhi khoa</option>
+                            <option value="2">Sản phẩm khác</option>
+                        </select>
+                        {/* <input type="text" name="type" value={edit.type} onChange={changeFormEdit}/> */}
                     </div>
                     <div>
                         <h4>Mô tả</h4>
@@ -248,11 +254,17 @@ const AdminProduct = () => {
                         <b>Hình ảnh: </b><input type="file" name="add_path" onChange={changeFormAdd}/>
                     </div>
                     <div>
-                        <b>Loại: </b><input type="text" name="add_type"onChange={changeFormAdd}/>
+                        <b>Loại: </b>
+                        <select name="type" value={edit.type} onChange={changeFormEdit}>
+                            <option value="0">Nhãn khoa</option>
+                            <option value="1">Nhi khoa</option>
+                            <option value="2">Sản phẩm khác</option>
+                        </select>
+                        {/* <input type="text" name="add_type"onChange={changeFormAdd}/> */}
                     </div>
                     <div>
                         <h4>Mô tả</h4>
-                        <textarea type="text" name="add-description" onChange={changeFormAdd}/>
+                        <textarea type="text" name="add_description" onChange={changeFormAdd}/>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

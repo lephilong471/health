@@ -5,7 +5,6 @@ import {useLocation} from 'react-router-dom'
 
 const PageIntroduce = ({component}) => {
     const location = useLocation()
-    console.log(location.pathname === '/pages/term-of-use' || location.pathname === 'pages/secure-policy')
     const style= {
         background:"#F7FFFD"
     }
@@ -13,7 +12,7 @@ const PageIntroduce = ({component}) => {
         <>
             <Header/>
             <div className="pageContent" 
-                style={(location.pathname === '/pages/term-of-use' || location.pathname === 'pages/secure-policy') ? style:null}>
+                style={(location.pathname === '/pages/term-of-use' || location.pathname === '/pages/secure-policy') ? style:null}>
                 {component}
             </div>
             <Footer/>

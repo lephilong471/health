@@ -1,41 +1,76 @@
-import React, {useState, useEffect } from 'react'
+import React, {useState, useEffect, useRef} from 'react'
 import Modal from 'react-bootstrap/Modal'
-import {config, containsSpecialChars} from '../config'
+import {containsSpecialChars} from '../config'
 import { RiSendPlaneFill } from "react-icons/ri";
 import { VscAccount } from "react-icons/vsc";
 import { BiSupport } from "react-icons/bi";
 import { ImExit } from "react-icons/im";
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
+
+// Firestore
+import { db } from '../firestore';
+import { collection, query, where, orderBy, addDoc, getDocs, onSnapshot, serverTimestamp } from "firebase/firestore"; 
 
 const PageSupport = () => {
     const [modal, setModal] = useState(false)
+
     const checkID = localStorage.getItem('ClientID')
+
     const [code, setCode] = useState(null)
     const [check, setCheck] = useState(false)
-    const [messageData, setMessageData] = useState([{}])
+    const [messageData, setMessageData] = useState(null)
     const [messageSend, setMessageSend] = useState('')
     const navigate = useNavigate()
     
     const CIM = document.querySelector('.chat-input-message')
     const CB = document.querySelector('.chat-content')
 
-    useEffect(() => {
+    const bottom = useRef(Element)
+
+    const scrollToBottom = () => {
+        bottom.current?.lastElementChild?.scrollIntoView({behavior: 'smooth'})
+    }
+
+
+    useEffect(()=>{
         if(checkID === null) setModal(true)
-        else {
-            axios.get(`${config.proxy}/api/client/get-message/${checkID}`)
-                .then(res => {
-                    setMessageData(res.data)
-                })
-        }
+        
+        const getData =  async() => {
+                const querySnapshot = await getDocs(query(collection(db, "support"),where('clientID', '==', checkID),orderBy("created_at")));
+                const result = querySnapshot.docs.map((doc) => ({id:doc.id, ...doc.data()}))
+                setMessageData(result)
+                scrollToBottom()
+            }
+
+        // if(checkID === null) setModal(true)
+        // else {
+        //     axios.get(`${config.proxy}/api/client/get-message/${checkID}`)
+        //         .then(res => {
+        //             setMessageData(res.data)
+        //             scrollToBottom()
+        //         })
+        // }
+        return () => getData()
     },[checkID])
 
-    const fetchMessage = () => {
-        axios.get(`${config.proxy}/api/client/get-message/${checkID}`)
-                .then(res => {
-                    setMessageData(res.data)
-                })
-    }
+    useEffect(() => {
+        const unsub = onSnapshot(query(collection(db, "support"), where('clientID', '==', checkID), orderBy("created_at")), (querySnapshot) => {
+            const result = querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()}))
+            setMessageData(result)
+            scrollToBottom()
+        });  
+
+        return () => unsub()
+    }, [checkID])
+   
+    // const fetchMessage = () => {
+    //     axios.get(`${config.proxy}/api/client/get-message/${checkID}`)
+    //             .then(res => {
+    //                 setMessageData(res.data)
+    //                 scrollToBottom()
+    //             })
+    // }
 
     const handleChange = (event) => {
         const value =event.target.value
@@ -55,21 +90,33 @@ const PageSupport = () => {
         }
     }
 
-    const handleSend = () => {
+    const handleSend = async () => {
         if(messageSend === '') alert('Vui lòng nhập thông tin')
         else{
-            axios.post(`${config.proxy}/api/client/send-message`,
-            {
+            await addDoc(collection(db, 'support'),{
                 clientID: checkID,
-                message: messageSend
-            }).then(function(response){
-                if(response.status === 200) {
-                    setMessageSend('')
-                    fetchMessage()
-                    CIM.style.height = '40px'
-                    CB.style.height = 'calc(100vh - 200px)'
-                }
+                client_message: messageSend,
+                admin_message: null,
+                created_at: serverTimestamp(),
+                updated_at:  serverTimestamp(),
             })
+
+            setMessageSend('')
+            CIM.style.height = '40px'
+            CB.style.height = 'calc(100vh - 200px)'
+
+            // axios.post(`${config.proxy}/api/client/send-message`,
+            // {
+            //     clientID: checkID,
+            //     message: messageSend
+            // }).then(function(response){
+            //     if(response.status === 200) {
+            //         setMessageSend('')
+            //         fetchMessage()
+            //         CIM.style.height = '40px'
+            //         CB.style.height = 'calc(100vh - 200px)'
+            //     }
+            // })
         }
     }
 
@@ -84,7 +131,6 @@ const PageSupport = () => {
                 if(e.target.value !== '')
                 {
                     let scHeight = e.target.scrollHeight
-                    console.log(scHeight)
                     CIM.style.height = `${scHeight}px`
                     CB.style.height = `calc(100vh - 200px - ${scHeight}px + 44px`
                 }
@@ -98,7 +144,6 @@ const PageSupport = () => {
         
         setMessageSend(event.target.value)
     }
-
     return (
         <>
             {checkID === null ? (
@@ -123,23 +168,25 @@ const PageSupport = () => {
             </Modal>
             ):(
                 <div className="chat-background">
-                    <div className="chat-content">
+                    <div className="chat-content" ref={bottom}>
                         <div className="d-flex align-items-center justify-content-end">
                             <span className="admin-message">Bạn có thể đặt câu hỏi tại đây</span> <BiSupport size={25}/>
-                        </div>   
-                        {messageData.map((item, index) => {
+                        </div>
+                      
+                        {messageData && messageData.map((item, index) => {
                             return (
                                 <>
-                                    <div className="d-flex align-items-center justify-content-start">
-                                        <VscAccount size={25}/> <span className="client-message" key={index}>{item['client_message']}</span>
+                                    <div className="d-flex align-items-center justify-content-start" key={item.id}>
+                                        {/* <VscAccount size={25}/> <span className="client-message" key={index}>{item.data['client_message']}</span> */}
+                                        <VscAccount size={25}/> <span className="client-message">{item.client_message}</span>
                                     </div>
 
-                                   {item['admin_message'] !== null && (
-                                    <div className="d-flex align-items-center justify-content-end">
-                                        <span className="admin-message" key={index}>{item['admin_message']}</span> <BiSupport size={25}/>
+                                   {item.admin_message !== null && (
+                                    <div className="d-flex align-items-center justify-content-end" key={index}>
+                                        {/* <span className="admin-message" key={index}>{item.data['admin_message']}</span> <BiSupport size={25}/> */}
+                                        <span className="admin-message">{item.admin_message}</span> <BiSupport size={25}/>
                                     </div>        
                                    )}
-                                       
                                 </>
                               
                             )

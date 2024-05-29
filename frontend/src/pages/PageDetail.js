@@ -29,13 +29,13 @@ const PageDetail = () =>{
                     <img width={200} class="border border-info" src={config.image_path+data['image_url']} alt=''/>
                 </div>
                 <div class="col-xxl-6 col-lg-6 col-md-4 col-sm-10 col-10 text-start my-2">
-                    <h2>{data['detail']}</h2>
+                    <h3>{data['detail']}</h3>
                     <h4>Giá:  <span className="text-primary">{formatNumber(data['price'])}</span> </h4>
                     <h4>Loại: {checkType(data['type'])}</h4>
                 </div>
                 <div class="col-10 my-2 text-start">
-                    <h1>Mô tả sản phẩm</h1>
-                    <div style={{fontSize: '20px'}} dangerouslySetInnerHTML={{__html:data['description']}}/>
+                    <h3>Mô tả sản phẩm</h3>
+                    <div style={{fontSize: '18px'}} dangerouslySetInnerHTML={{__html:data['description']}}/>
                 </div>
             </div>
         </div>
