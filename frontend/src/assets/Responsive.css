@@ -25,12 +25,16 @@
         justify-content: space-around;
     }
 
-    .footer > div:nth-child(2), .footer > div:nth-child(3){
+    .footer > a:nth-child(2), .footer > a:nth-child(3){
         display:none;
     }
 
     .file-card{
         width:100% !important;
+    }
+
+    .chat-input .chat-input-message{
+        width:220px;
     }
 }
 

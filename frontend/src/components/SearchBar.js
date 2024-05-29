@@ -1,13 +1,16 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { IoSearchOutline } from "react-icons/io5"
 import { config } from '../config'
 import { TbCameraHeart } from "react-icons/tb"
 import Modal from 'react-bootstrap/Modal'
 import FileUpload from './FileUpload'
+import { GlobalContext } from '../store/GlobalContext'
 
 const SearchBar = ({setResult}) => {
-    const [input, setInput] = useState("")
+    // const [input, setInput] = useState("")
     const [show, setShow] = useState(false);
+    const {search, setSearch} = useContext(GlobalContext)
+
     const fetchData = (value) => {
         if(value === "")  setResult([])
         else{
@@ -19,7 +22,8 @@ const SearchBar = ({setResult}) => {
     }
     const handleChange = (value) => {
         fetchData(value)
-        setInput(value)
+        setSearch(value)
+        // setInput(value)
     }
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -27,7 +31,7 @@ const SearchBar = ({setResult}) => {
     return (
         <>
         <TbCameraHeart className="cameraIcon" onClick={handleShow}/>
-        <input type='text' className="search" placeholder='Tìm kiếm' value={input} onChange ={(e) => handleChange(e.target.value)}/>
+        <input type='text' className="search" placeholder='Tìm kiếm' value={search} onChange ={(e) => handleChange(e.target.value)}/>
         <IoSearchOutline className="searchIcon"/>
 
         <Modal show={show} onHide={handleClose}>

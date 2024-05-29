@@ -2,7 +2,7 @@ import React from 'react'
 
 const PageTermOfUse = () => {
     return (
-        <div className="text-start m-4 fs-6">
+        <div className="text-start m-4 fs-5">
             <div>
                 <h3 style={{fontFamily: 'Pacifico'}}>Dữ liệu hệ thống gồm những gì ?</h3>
                 <ul>
