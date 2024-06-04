@@ -13,7 +13,6 @@ import {collection, getDocs, doc, deleteDoc, onSnapshot, query, orderBy} from 'f
 
 const AdminSupport = () => {
     const [listID, setListID] = useState([])
-    const token = localStorage.getItem('Access-Token')
     const {closeNav} = useContext(GlobalContext)
     const [deleteModal, setDeleteModal] = useState(false)
     const [clientID, setClientID] = useState('')
@@ -118,7 +117,7 @@ const AdminSupport = () => {
                                     <RiInboxArchiveFill size={25}/>
                                     <div className="noreply-count">{item.noreply}</div>
                                 </div>
-                                <Link to={`/admin/pages/support-room-chat/${item.clientID}`}><FaReply size={20} className="text-primary"/></Link>
+                                <Link to={`/${config.admin_path}/pages/support-room-chat/${item.clientID}`}><FaReply size={20} className="text-primary"/></Link>
                                 <FaTrash className="deleteIcon text-danger" size={20} onClick={() => showModal(item.clientID)}/>
                             </div>
                         )

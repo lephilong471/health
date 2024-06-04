@@ -1,17 +1,21 @@
-import React from 'react'
+import React, {useContext} from 'react'
+import { GlobalContext } from '../../store/GlobalContext';
 import { useNavigate } from 'react-router-dom';
 import { BiLogOut } from "react-icons/bi";
 import axios from 'axios';
 import { config } from '../../config';
+
 const Header = () => {
     const navigate = useNavigate()
+    const {setAdminToken} = useContext(GlobalContext)
 
     const logout = () => {
         axios.get(config.proxy+"/api/admin-logout")
             .then(function(response){
                 if(response.status === 200){
+                    setAdminToken(null)
                     localStorage.removeItem('Access-Token')
-                    navigate('/admin')
+                    navigate(`/${config.admin_path}`)
                 } 
             })
             .catch(error => console.log(error))

@@ -12,7 +12,7 @@ const PageIntroduce = ({component}) => {
         <>
             <Header/>
             <div className="pageContent" 
-                style={(location.pathname === '/pages/term-of-use' || location.pathname === '/pages/secure-policy') ? style:null}>
+                style={(location.pathname === '/pages/service' || location.pathname === '/pages/term-of-use' || location.pathname === '/pages/secure-policy') ? style:null}>
                 {component}
             </div>
             <Footer/>

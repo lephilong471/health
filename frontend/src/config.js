@@ -1,7 +1,8 @@
 export const config = {
-    proxy: 'http://127.0.0.1:5000',
-    host: 'http://127.0.0.1:3000',
-    image_path: 'http://127.0.0.1:5000/static/public'
+    proxy: process.env.REACT_APP_PROXY,
+    host: process.env.REACT_APP_HOST,
+    image_path: `${process.env.REACT_APP_PROXY}/static/public`,
+    admin_path: `${process.env.REACT_APP_ADMIN_PATH}`
 }
 
 export const checkType = (type) =>{
