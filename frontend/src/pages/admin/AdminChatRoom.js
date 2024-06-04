@@ -131,9 +131,9 @@ const AdminChatRoom = () => {
 
                 <Modal className="reply-modal" show={modal} onHide={()=> setModal(!modal)}>
                     <Modal.Body className="d-flex justify-content-center">
-                        <div>
+                        <div className="d-flex align-items-center">
                             <input type="text" name="message" value={messageSend} onChange={(e)=>setMessageSend(e.target.value)} placeholder="Nhập tin nhắn"/>
-                            <RiSendPlaneFill className="send-icon" onClick={handleSend}/>
+                            <RiSendPlaneFill className="admin-send-icon" onClick={handleSend}/>
                         </div>
                     </Modal.Body>
                 </Modal>

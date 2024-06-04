@@ -3,14 +3,14 @@ import axios from 'axios'
 import { config, checkType, formatNumber } from '../../config'
 import Modal from 'react-bootstrap/Modal'
 import { GlobalContext } from '../../store/GlobalContext'
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 
 const AdminProduct = () => {
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
    
 
     const [data, setData] = useState([{}])
-    const {closeNav} = useContext(GlobalContext)
+    const {closeNav, adminToken, setAdminToken} = useContext(GlobalContext)
 
     const [display, setDisplay] = useState([])
 
@@ -80,7 +80,6 @@ const AdminProduct = () => {
     },[])
 
     const update = () => {
-        const token = localStorage.getItem('Access-Token')
         axios({
             method: "POST",
             url: `${config.proxy}/api/admin/update-product`,
@@ -95,10 +94,13 @@ const AdminProduct = () => {
                 description: edit.description
             },
             headers: {
-                'Authorization': 'Bearer '+ token
+                'Authorization': 'Bearer '+ adminToken
             }
         }).then(function(res){
             if(res.status === 200) {
+                // If the response contains an access token, 
+                // this means that the current token is near expiration and the server has created a new token.
+                res.access_token && setAdminToken(res.access_token)
                 setModalEdit(false)
                 window.location.reload(false)
             }
@@ -106,9 +108,7 @@ const AdminProduct = () => {
         // .then(error => console.log(error))
     }
     
-    const addConfirm = () => {
-        const token = localStorage.getItem('Access-Token')
-       
+    const addConfirm = () => {       
         const formData = new FormData()
         formData.append('name',add.add_name)
         formData.append('detail',add.add_detail)
@@ -122,11 +122,12 @@ const AdminProduct = () => {
             url: `${config.proxy}/api/admin/add-product`,
             data: formData,
             headers:{
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'Bearer ' + adminToken
             }
         }).then(function(response){
             if(response.status === 200)
             {
+                response.access_token && setAdminToken(response.access_token)
                 setModalAdd(false)
                 window.location.reload(false)
             }

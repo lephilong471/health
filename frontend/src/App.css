@@ -443,14 +443,39 @@
   padding:10px 20px;
 }
 
+.emoji-icon{
+  font-size:25px;
+  position:relative;
+  right:30px;
+}
+
+.emoji-icon:hover{
+  cursor:pointer;
+}
 .send-icon{
   font-size:30px;
   margin: 0 10px;
+  position:absolute;
+  right:-25px;
 }
 
-.send-icon:hover{
+.admin-send-icon{
+  font-size:30px;
+  position:relative;
+  margin: 0 10px;
+}
+
+.admin-send-icon:hover, .send-icon:hover{
   cursor:pointer;
   color: coral;
+}
+
+.chat-input .emoji-picker{
+  position:absolute;
+  width:280px !important;
+  height:300px !important;
+  bottom:70px;
+  border:3px solid grey;
 }
 
 .chat-content{
@@ -505,7 +530,7 @@
   height: 40px;
   max-height: 100px;
   width:300px;
-  padding: 10px;
+  padding: 10px 30px 10px 10px;
   border-radius:10px;
   border: 2px solid #000000;
 }
@@ -516,4 +541,26 @@
 
 .deleteIcon:hover{
   cursor:pointer;
+}
+
+.service-container{
+  position:relative;
+  height:calc(100vh - 110px);
+  overflow-x:hidden; 
+  z-index:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  left:60px;
+}
+
+.carousel-item img{
+  width:100vh;
+  height:calc(100vh - 110px);
+}
+
+.carousel-item
+{
+  background: rgb(255,216,216);
+  background: linear-gradient(135deg, rgba(255,216,216,1) 0%, rgba(255,250,206,1) 100%);
 }

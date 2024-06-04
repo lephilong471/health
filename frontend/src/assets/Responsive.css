@@ -36,6 +36,10 @@
     .chat-input .chat-input-message{
         width:220px;
     }
+
+    .chat-content .client-message, .chat-content .admin-message{
+        max-width:260px;
+    }
 }
 
 

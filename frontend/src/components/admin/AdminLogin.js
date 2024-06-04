@@ -1,15 +1,18 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import "../../assets/Admin.css"
 import axios from 'axios'
 import { config } from '../../config'
 import { useNavigate } from 'react-router-dom'
 import AdminPageMain from '../../pages/admin/AdminPageMain'
+import { GlobalContext } from '../../store/GlobalContext'
 
 const AdminLogin = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const navigate = useNavigate()
-    const token = localStorage.getItem('Access-Token')
+    
+    const {adminToken, setAdminToken} = useContext(GlobalContext)
+    // const token = localStorage.getItem('Access-Token')
     
     const handleSubmit = () => {
         if(username === '' || password === '') alert('Please fill your information')
@@ -21,11 +24,12 @@ const AdminLogin = () => {
             })
         .then(function(res){
             if(res.status === 200){
+                setAdminToken(res.data.token)
                 localStorage.setItem('Access-Token',res.data.token)
                 setUsername('')
                 setPassword('')
             } 
-            navigate('/admin')
+            navigate(`/${config.admin_path}`)
         })
         .catch(error => {
             console.log(error)
@@ -36,7 +40,7 @@ const AdminLogin = () => {
 
     return (
          <>
-            {token === null ? (
+            {adminToken === null || adminToken === undefined ? (
                 <div className="admin-background">
                 <form className="admin-login-form">
                     <div className="header-logo">

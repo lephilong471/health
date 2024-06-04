@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 import os
 import cv2
 import pytesseract
-from config import tesseract_cmd
+# from config import tesseract_cmd
 import json
 import bcrypt
 
@@ -15,6 +15,7 @@ app = Flask(__name__)
 
 app.config['JWT_SECRET_KEY'] = '0969099045'
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config.from_pyfile('config.py')
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 app.config.update(
@@ -52,8 +53,11 @@ def refresh_expiring_jwts(response):
         # Case where there is not a valid JWT. Just return the original respone
         return response
 
-mysql = mysql.connector.connect(host='localhost',port='3306',database='health',user='root',
-                                password='123456')
+mysql = mysql.connector.connect(host=app.config['DATABASE_HOST'],
+                                port=app.config['DATABASE_PORT'],
+                                database=app.config['DATABASE_NAME'],
+                                user=app.config['DATABASE_USER'],
+                                password=app.config['DATABASE_PASSWORD'])
 
 
 @app.route('/')
@@ -62,6 +66,7 @@ def Index():
 #     cur.execute('INSERT INTO data VALUES (6,2)')
 #     mysql.commit()
 #     cur.close()
+    # return send_from_directory(app.static_folder)
     return 'Success'
 
 # Start of function
@@ -80,7 +85,7 @@ def convert_product(data):
     return result
 
 def image_to_text(image_path):
-    pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
+    pytesseract.pytesseract.tesseract_cmd = app.config['tesseract_cmd']
         
     img = cv2.imread(image_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

@@ -5,7 +5,9 @@ import { RiSendPlaneFill } from "react-icons/ri";
 import { VscAccount } from "react-icons/vsc";
 import { BiSupport } from "react-icons/bi";
 import { ImExit } from "react-icons/im";
+import { MdOutlineEmojiEmotions } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
+import EmojiPicker from 'emoji-picker-react';
 // import axios from 'axios';
 
 // Firestore
@@ -32,6 +34,8 @@ const PageSupport = () => {
         bottom.current?.lastElementChild?.scrollIntoView({behavior: 'smooth'})
     }
 
+    const [picker, setPicker] = useState(false)
+    const inputRef = useRef()
 
     useEffect(()=>{
         if(checkID === null) setModal(true)
@@ -104,7 +108,7 @@ const PageSupport = () => {
             setMessageSend('')
             CIM.style.height = '40px'
             CB.style.height = 'calc(100vh - 200px)'
-
+            setPicker(false)
             // axios.post(`${config.proxy}/api/client/send-message`,
             // {
             //     clientID: checkID,
@@ -127,7 +131,7 @@ const PageSupport = () => {
 
     const inputMessage = (event) => {
         if(CIM !== null && CB !== null){
-            CIM.addEventListener('keyup', e => {
+            CIM.addEventListener('keydown', e => {
                 if(e.target.value !== '')
                 {
                     let scHeight = e.target.scrollHeight
@@ -138,12 +142,26 @@ const PageSupport = () => {
                     CIM.style.height = '40px'
                     CB.style.height = 'calc(100vh - 200px)'
                 }
-
             })
         }
-        
         setMessageSend(event.target.value)
     }
+
+    const pickEmoji = (event) => {
+        inputRef.current.focus()
+        setMessageSend(prev => prev + event.emoji)
+        // if(inputRef.current){
+        //     const start = messageSend.substring(0,inputRef.current.selectionStart)
+        //     const end = messageSend.substring(inputRef.current.selectionStart)
+        //     setMessageSend(start + event.emoji +end)
+        // }
+        // else{
+        //     setMessageSend(prev => prev + event.emoji)
+        // }
+        // inputRef.current.selectionStart = cursorPosition + 1;
+        // inputRef.current.selectionEnd = cursorPosition + 1;
+    }
+
     return (
         <>
             {checkID === null ? (
@@ -163,7 +181,7 @@ const PageSupport = () => {
                 </Modal.Body>
                 <Modal.Footer>
                     <div className="fst-italic">Nhập một mã bất kỳ gồm số hoặc chữ để hệ thống có thể nhận diện đó là bạn</div>
-                    <div><span className="text-warning fw-bold">Lưu ý: </span>Đặt mã dễ nhớ để bạn có thể xem câu trả lời từ Admin khi truy cập vào đây</div>
+                    <div><span className="text-warning fw-bold">Lưu ý: </span>Đặt mã dễ nhớ để bạn có thể xem câu trả lời từ Hệ thống khi truy cập vào đây</div>
                 </Modal.Footer>
             </Modal>
             ):(
@@ -194,8 +212,10 @@ const PageSupport = () => {
                     </div>
                     <div className="chat-input">
                         <ImExit className="chat-exit" onClick={handleExit}/>
-                        <textarea type="text" className="chat-input-message" value={messageSend} name="message" onChange={inputMessage} placeholder="Nhập tin nhắn"/>
+                        <textarea type="text" ref={inputRef} className="chat-input-message" value={messageSend} name="message" onChange={inputMessage} placeholder="Nhập tin nhắn"/>
+                        <MdOutlineEmojiEmotions className="emoji-icon" onClick={() => setPicker(!picker)}/>
                         <RiSendPlaneFill className="send-icon" onClick={handleSend}/>
+                        <EmojiPicker className="emoji-picker" skinTonesDisabled="true" open={picker} searchDisabled="true" emojiStyle="facebook" onEmojiClick={pickEmoji}/>
                     </div>
                 </div>
             )}
