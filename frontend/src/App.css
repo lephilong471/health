@@ -513,6 +513,12 @@
   text-align:left;
 }
 
+.admin-view-image{
+  border: 1px solid #000000;
+  width: 200px;
+  margin: 20px 0;
+}
+
 .chat-input .chat-exit{
   transform:rotateY(180deg);
   font-size:20px;
