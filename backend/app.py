@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
-import mysql.connector
+# import mysql.connector
+import psycopg2
 from flask_cors import CORS
 from flask_dropzone import Dropzone
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, unset_jwt_cookies, get_jwt, get_jwt_identity
@@ -75,7 +76,7 @@ def refresh_expiring_jwts(response):
         # Case where there is not a valid JWT. Just return the original respone
         return response
 
-mysql = mysql.connector.connect(host=app.config['DATABASE_HOST'],
+mysql = psycopg2.connect(host=app.config['DATABASE_HOST'],
                                 port=app.config['DATABASE_PORT'],
                                 database=app.config['DATABASE_NAME'],
                                 user=app.config['DATABASE_USER'],
@@ -128,7 +129,7 @@ def search_product_from_string(sentence):
     result = []
 
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine")
+    cursor.execute("SELECT * FROM medicine ORDER BY id")
     products = convert_product(cursor.fetchall())
     cursor.close()
     
@@ -146,7 +147,7 @@ def search_product_from_string(sentence):
 @app.route('/api/product-eyes')
 def productEyes():
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE type = 0")
+    cursor.execute("SELECT * FROM medicine WHERE type = 0 ORDER BY id")
     result = convert_product(cursor.fetchall())
     cursor.close()
     return result
@@ -154,7 +155,7 @@ def productEyes():
 @app.route('/api/product-child')
 def productChild():
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE type = 1")
+    cursor.execute("SELECT * FROM medicine WHERE type = 1 ORDER BY id")
     result = convert_product(cursor.fetchall())
     cursor.close()
     return result
@@ -162,7 +163,7 @@ def productChild():
 @app.route('/api/product-other')
 def productOther():
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE type = 2")
+    cursor.execute("SELECT * FROM medicine WHERE type = 2 ORDER BY id")
     result = convert_product(cursor.fetchall())
     cursor.close()
     return result
@@ -287,7 +288,7 @@ def admin_logout():
 @app.route('/api/admin/get-all-products')
 def admin_get_all_products():
     cursor = mysql.cursor()
-    cursor.execute('SELECT * FROM medicine')
+    cursor.execute('SELECT * FROM medicine ORDER BY id')
     data = convert_product(cursor.fetchall())
     cursor.close()
     return data
