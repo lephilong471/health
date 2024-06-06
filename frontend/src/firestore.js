@@ -20,6 +20,9 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore();
-connectFirestoreEmulator(db, '127.0.0.1', 8080);
+if(window.location.hostname === 'localhost'){
+  connectFirestoreEmulator(db, '127.0.0.1', 8080);
+}
+
 
 export {app, db}
