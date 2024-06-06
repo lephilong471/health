@@ -7,7 +7,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, un
 from datetime import datetime, timedelta, timezone
 import os
 import cv2
-import pytesseract
+# import pytesseract
 # from config import tesseract_cmd
 import json
 import bcrypt
