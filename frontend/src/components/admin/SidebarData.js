@@ -12,5 +12,10 @@ export const SidebarData = [
         title: 'Tư vấn',
         path: `/${config.admin_path}/pages/support`,
         icon: '/images/support.svg',
+    },
+    {
+        title: 'Mô hình',
+        path: `/${config.admin_path}/pages/model-evaluate`,
+        icon: '/images/ai-model.svg',
     }
 ]

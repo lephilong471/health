@@ -10,7 +10,8 @@ import pytesseract
 # from config import tesseract_cmd
 import json
 import bcrypt
-
+import tensorflow
+import numpy
 app = Flask(__name__)
 
 app.config['JWT_SECRET_KEY'] = '0969099045'
@@ -19,6 +20,7 @@ app.config.from_pyfile('config.py')
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 app.config.update(
+    MODEL_PATH = os.path.join(dir_path, "static/model/model.h5"),
     UPLOADED_PATH = os.path.join(dir_path, "static/temp/"),
     PUBLIC_PATH = os.path.join(dir_path, "static/public/"),
     DROPZONE_ALLOWED_FILE_TYPE = "image",
@@ -29,6 +31,26 @@ app.config.update(
 CORS(app)
 dropzone = Dropzone(app)
 jwt = JWTManager(app)
+image_search_model = tensorflow.keras.models.load_model(app.config['MODEL_PATH'])
+list_indices = {'Blueye': 0,
+                'Britop': 1,
+                'Eyecool': 2,
+                'Flucan': 3,
+                'Fortipred': 4,
+                'Fumeron': 5,
+                'Hexami': 6,
+                'Hwabra': 7,
+                'Immutussin': 8,
+                'Levaeyes': 9,
+                'Levoleo 500': 10,
+                'Lumix': 11,
+                'Luxavision': 12,
+                'Novolegic': 13,
+                'Novotane softcap': 14,
+                'Philevomels': 15,
+                'Philoclex': 16,
+                'Posod': 17,
+                'Quinovid': 18}
 
 @app.after_request
 def after_request(response):
@@ -166,31 +188,64 @@ def search(value):
         })
     return result
 
+# @app.route('/api/search-file-upload',methods=['POST'])
+# def search_file_upload():        
+#     if request.method == 'POST':
+#         f = request.files.get('file')
+#         filename, extension = f.filename.split(".")
+#         hash_name = str(abs(hash(f.filename)))
+
+#         file_location = os.path.join(app.config['UPLOADED_PATH'],filename)
+#         f.save(file_location)
+     
+#         sentence = image_to_text(file_location)
+#         search = search_product_from_string(sentence)
+
+#         print('Sentence',sentence)
+#         # INSERT TO image_to_text TABLE
+#         cursor = mysql.cursor()
+#         for product_id in search:
+#             query = "INSERT INTO image_to_text VALUES (NULL,'" + f.filename + "','" + hash_name + "'," + str(product_id) + ",'" + str(datetime.now()) + "','" + str(datetime.now()) + "')"
+#             cursor.execute(query)
+#         mysql.commit()
+
+#         os.remove(file_location)
+#         cursor.close()
+
+#     return 'Success'
+
 @app.route('/api/search-file-upload',methods=['POST'])
 def search_file_upload():        
     if request.method == 'POST':
         f = request.files.get('file')
-        filename, extension = f.filename.split(".")
-        hash_name = str(abs(hash(f.filename)))
-
-        file_location = os.path.join(app.config['UPLOADED_PATH'],filename)
+        file_location = os.path.join(app.config['UPLOADED_PATH'],f.filename)
         f.save(file_location)
      
-        sentence = image_to_text(file_location)
-        search = search_product_from_string(sentence)
+        img = tensorflow.keras.preprocessing.image.load_img(file_location, target_size=(256, 256, 3))
+        x = tensorflow.keras.preprocessing.image.img_to_array(img)
+        x = numpy.expand_dims(x, axis = 0)
+        x /= 255
 
-        print('Sentence',sentence)
-        # INSERT TO image_to_text TABLE
-        cursor = mysql.cursor()
-        for product_id in search:
-            query = "INSERT INTO image_to_text VALUES (NULL,'" + f.filename + "','" + hash_name + "'," + str(product_id) + ",'" + str(datetime.now()) + "','" + str(datetime.now()) + "')"
-            cursor.execute(query)
-        mysql.commit()
+        pred = image_search_model.predict(x)
+        index = numpy.argmax(pred[0])
 
+        name = [item for item in list_indices if list_indices[item] == index][0]
         os.remove(file_location)
-        cursor.close()
 
-    return 'Success'
+        if(pred[0][index] > 0.8):
+            cursor = mysql.cursor()
+            cursor.execute("SELECT id, name FROM medicine WHERE name like '%"+name+"%'")
+            data = cursor.fetchone()
+            cursor.close()
+            if(data != None):
+                return jsonify({'data':{
+                    'product_id': data[0],
+                    'product_name': data[1]
+                }}), 200
+            else:
+                return jsonify({'msg':'Not Found!'}), 200
+        else:
+            return jsonify({'msg':'Not Found!'}), 200
 
 @app.route('/api/search-file-upload/<string:image_name>',methods=['GET'])
 def getImage(image_name):
@@ -343,6 +398,48 @@ def admin_delete_room():
     mysql.commit()
     cursor.close()
     return jsonify({'msg': 'Delete Room Successfully'}), 200
+
+@app.route('/api/admin/view-image/<string:action>', methods=['POST'])
+@jwt_required()
+def admin_view_image(action):
+    if(action == "add"):
+        f = request.files.get('file')
+        filename, extension = f.filename.split('.')
+        hashfile = str(abs(hash(filename + '-' + str(datetime.now())))) + '.' +extension
+        file_location = os.path.join(app.config['UPLOADED_PATH'], hashfile)
+        f.save(file_location)
+        return jsonify({'path': 'static/temp/'+hashfile}), 200
+    else:
+        path = request.json['path']
+        file_location = os.path.join(dir_path,path)
+        os.remove(file_location)
+        return jsonify({'msg': 'Delete View Image Successfully!'}), 200
+    return True
+
+
+@app.route('/api/admin/model-evaluate', methods=['POST'])
+@jwt_required()
+def admin_model_evaluate():
+    path = request.json['path']
+    file_location = os.path.join(dir_path,path)
+
+    img = tensorflow.keras.preprocessing.image.load_img(file_location, target_size=(256, 256, 3))
+    x = tensorflow.keras.preprocessing.image.img_to_array(img)
+    x = numpy.expand_dims(x, axis = 0)
+    x /= 255
+    pred = image_search_model.predict(x)
+    index = numpy.argmax(pred[0])
+
+    data = []
+    for i in list_indices:
+        data.append({
+            'name': i,
+            'value': str(pred[0][list_indices[i]])
+        })
+
+    predict_name = [item for item in list_indices if list_indices[item] == index][0]
+   
+    return jsonify({'data': data, 'predict_name': predict_name}), 200
 
 @app.route('/test', methods=['GET'])
 @jwt_required()

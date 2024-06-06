@@ -4,7 +4,7 @@ import { GlobalContext } from './GlobalContext'
 export const GlobalProvider = ({children}) => {
     const [closeNav, setCloseNav] = useState(false)
     const [search, setSearch] = useState('')
-
+    const [showUpload, setShowUpload] = useState(false)
     const [adminToken, setAdminToken] = useState(localStorage.getItem('Access-Token'))
 
     const toggle = () => {
@@ -12,7 +12,9 @@ export const GlobalProvider = ({children}) => {
     }
 
     return (
-        <GlobalContext.Provider value = {{closeNav, toggle, search, setSearch, adminToken, setAdminToken}}>
+        <GlobalContext.Provider value = {{closeNav, toggle, search, setSearch, adminToken, setAdminToken,
+            showUpload, setShowUpload
+        }}>
             {children}
         </GlobalContext.Provider>
     )
