@@ -327,7 +327,7 @@ def admin_add_product():
     p_description = str(request.form['description'])
    
     cursor = mysql.cursor()
-    cursor.execute("INSERT INTO medicine VALUES (NULL,'"+p_name+"','"+p_detail+"','"+p_path+"','"+p_price+"','"+p_description+"','"+p_type+"','"+str(datetime.now())+"','"+str(datetime.now())+"')")
+    cursor.execute("INSERT INTO medicine (name, detail, image_url, price, description, type, created_at, updated_at) VALUES ('"+p_name+"','"+p_detail+"','"+p_path+"','"+p_price+"','"+p_description+"','"+p_type+"','"+str(datetime.now())+"','"+str(datetime.now())+"')")
     mysql.commit()
     cursor.close()
     
