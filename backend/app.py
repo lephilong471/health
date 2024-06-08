@@ -11,7 +11,7 @@ import cv2
 # from config import tesseract_cmd
 import json
 import bcrypt
-import tensorflow
+# import tensorflow
 import numpy
 app = Flask(__name__)
 
@@ -32,7 +32,7 @@ app.config.update(
 CORS(app)
 dropzone = Dropzone(app)
 jwt = JWTManager(app)
-image_search_model = tensorflow.keras.models.load_model(app.config['MODEL_PATH'])
+# image_search_model = tensorflow.keras.models.load_model(app.config['MODEL_PATH'])
 list_indices = {'Blueye': 0,
                 'Britop': 1,
                 'Eyecool': 2,
