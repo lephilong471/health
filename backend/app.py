@@ -11,7 +11,7 @@ import cv2
 # from config import tesseract_cmd
 import json
 import bcrypt
-# import keras
+import tensorflow
 import numpy
 app = Flask(__name__)
 
@@ -32,7 +32,7 @@ app.config.update(
 CORS(app)
 dropzone = Dropzone(app)
 jwt = JWTManager(app)
-# image_search_model = keras.models.load_model(app.config['MODEL_PATH'])
+image_search_model = tensorflow.keras.models.load_model(app.config['MODEL_PATH'])
 list_indices = {'Blueye': 0,
                 'Britop': 1,
                 'Eyecool': 2,
@@ -222,8 +222,8 @@ def search_file_upload():
         file_location = os.path.join(app.config['UPLOADED_PATH'],f.filename)
         f.save(file_location)
      
-        img = keras.preprocessing.image.load_img(file_location, target_size=(256, 256, 3))
-        x = keras.preprocessing.image.img_to_array(img)
+        img = tensorflow.keras.preprocessing.image.load_img(file_location, target_size=(256, 256, 3))
+        x = tensorflow.keras.preprocessing.image.img_to_array(img)
         x = numpy.expand_dims(x, axis = 0)
         x /= 255
 
@@ -235,7 +235,7 @@ def search_file_upload():
 
         if(pred[0][index] > 0.8):
             cursor = mysql.cursor()
-            cursor.execute("SELECT id, name FROM medicine WHERE name like '%"+name+"%'")
+            cursor.execute("SELECT id, name FROM medicine WHERE name like '%"+name.upper()+"%'")
             data = cursor.fetchone()
             cursor.close()
             if(data != None):
@@ -424,8 +424,8 @@ def admin_model_evaluate():
     path = request.json['path']
     file_location = os.path.join(dir_path,path)
 
-    img = keras.preprocessing.image.load_img(file_location, target_size=(256, 256, 3))
-    x = keras.preprocessing.image.img_to_array(img)
+    img = tensorflow.keras.preprocessing.image.load_img(file_location, target_size=(256, 256, 3))
+    x = tensorflow.keras.preprocessing.image.img_to_array(img)
     x = numpy.expand_dims(x, axis = 0)
     x /= 255
     pred = image_search_model.predict(x)
