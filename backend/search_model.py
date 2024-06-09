@@ -5,7 +5,7 @@ import os
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
-image_search_model = models.inception_v3(pretrained=True)
+image_search_model = models.inception_v3(weights='DEFAULT')
 
 NUM_FEATURES = image_search_model.fc.in_features
 NUM_CLASSES = 19

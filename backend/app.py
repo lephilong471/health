@@ -429,7 +429,7 @@ def admin_model_evaluate():
     for i in list_indices:
         data.append({
             'name': i,
-            'value': str(prob[list_indices[i]])
+            'value': str(prob[list_indices[i]].item())
         })
 
     predict_name = [item for item in list_indices if list_indices[item] == index][0]
