@@ -187,22 +187,22 @@ const PageSupport = () => {
             ):(
                 <div className="chat-background">
                     <div className="chat-content" ref={bottom}>
-                        <div className="d-flex align-items-center justify-content-end">
-                            <span className="admin-message">Bạn có thể đặt câu hỏi tại đây</span> <BiSupport size={25}/>
+                        <div className="d-flex align-items-center justify-content-start">
+                            <BiSupport size={25}/><span className="admin-message">Bạn có thể đặt câu hỏi tại đây</span>
                         </div>
                       
                         {messageData && messageData.map((item, index) => {
                             return (
                                 <>
-                                    <div className="d-flex align-items-center justify-content-start" key={item.id}>
+                                    <div className="d-flex align-items-center justify-content-end" key={item.id}>
                                         {/* <VscAccount size={25}/> <span className="client-message" key={index}>{item.data['client_message']}</span> */}
-                                        <VscAccount size={25}/> <span className="client-message">{item.client_message}</span>
+                                       <span className="client-message">{item.client_message}</span> <VscAccount size={25}/> 
                                     </div>
 
                                    {item.admin_message !== null && (
-                                    <div className="d-flex align-items-center justify-content-end" key={index}>
+                                    <div className="d-flex align-items-center justify-content-start" key={index}>
                                         {/* <span className="admin-message" key={index}>{item.data['admin_message']}</span> <BiSupport size={25}/> */}
-                                        <span className="admin-message">{item.admin_message}</span> <BiSupport size={25}/>
+                                        <BiSupport size={25}/> <span className="admin-message">{item.admin_message}</span>
                                     </div>        
                                    )}
                                 </>

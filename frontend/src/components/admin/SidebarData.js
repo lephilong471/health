@@ -17,5 +17,10 @@ export const SidebarData = [
         title: 'Mô hình',
         path: `/${config.admin_path}/pages/model-evaluate`,
         icon: '/images/ai-model.svg',
+    },
+    {
+        title: 'Lưu trữ',
+        path: `/${config.admin_path}/pages/storage`,
+        icon: '/images/storage.svg',
     }
 ]

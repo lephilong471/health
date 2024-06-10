@@ -183,7 +183,7 @@ def search(value):
     if value == "": return ""
     
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE name LIKE '%"+value+"%'")
+    cursor.execute("SELECT * FROM medicine WHERE name LIKE '%"+value.upper()+"%'")
     result = []
     for i in cursor.fetchall():
         result.append({
@@ -231,7 +231,7 @@ def search_file_upload():
 
         os.remove(file_location)
 
-        if(prob[index] > 0.8):
+        if(prob[index] > 0.09):
             cursor = mysql.cursor()
             cursor.execute("SELECT id, name FROM medicine WHERE name like '%"+name.upper()+"%'")
             data = cursor.fetchone()
@@ -435,6 +435,38 @@ def admin_model_evaluate():
     predict_name = [item for item in list_indices if list_indices[item] == index][0]
    
     return jsonify({'data': data, 'predict_name': predict_name}), 200
+
+@app.route('/api/admin/storage', methods=['GET','POST'])
+@jwt_required()
+def admin_storage():
+    if(request.method == 'GET'):
+        public_folder = os.listdir(app.config['PUBLIC_PATH']+'drugs/')
+        temp_folder = os.listdir(app.config['UPLOADED_PATH'])
+        return jsonify({
+            'product_image': public_folder,
+            'temp_image': temp_folder
+        }),200
+    elif(request.method == 'POST'):
+        request_type = request.json['type']
+        if(request_type == 'edit'):
+            old_path = 'drugs/'+ request.json['old_path']
+            new_path = 'drugs/'+ request.json['new_path']
+            os.rename(app.config['PUBLIC_PATH']+old_path,app.config['PUBLIC_PATH']+new_path)
+            return jsonify({'msg': 'Updated Path Successfully!'}), 200
+        elif(request_type == 'delete'):
+            filename = request.json['filename']
+            file_location = os.path.join(app.config['UPLOADED_PATH'],filename)
+            os.remove(file_location)
+            return jsonify({'msg': 'Delete Successfully!'}), 200
+   
+
+@app.route('/api/admin/upload-to-storage',methods=['POST'])
+@jwt_required()
+def admin_upload_to_storage():
+    f = request.files.get('file')
+    file_location = os.path.join(app.config['PUBLIC_PATH'],'drugs/'+f.filename)
+    f.save(file_location)
+    return jsonify({'msg': 'Upload To Storage Successfully!'}), 200
 
 @app.route('/test', methods=['GET'])
 @jwt_required()
