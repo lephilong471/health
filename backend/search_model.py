@@ -17,7 +17,7 @@ image_search_model.fc = torch.nn.Sequential(
                         torch.nn.Linear(512, NUM_CLASSES),
                     )
 
-image_search_model.load_state_dict = torch.load(os.path.join(dir_path,'static/model/torch_search_model.pth'))
+image_search_model.load_state_dict(torch.load(os.path.join(dir_path,'static/model/torch_search_model_cpu.pth')))
 
 image_search_model.eval()
 
