@@ -15,7 +15,13 @@ const PageMain = ({component}) => {
     // const clock =(new Date()).getHours()+':'+(new Date()).getMinutes()
 
     useEffect(() => {
-        axios.get('https://weatherplus.vn/api/v1/weather/now?lat=10.3645799&lng=106.6781219')
+        axios({
+            method:'GET',
+            url:'https://weatherplus.vn/api/v1/weather/now?lat=10.3645799&lng=106.6781219',
+            headers:{
+                'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+            }
+        })
             .then(res=> setWeather(res.data.data))
             .catch(error => console.log(error))
 
@@ -39,7 +45,10 @@ const PageMain = ({component}) => {
               <Sidebar />
               {welcome && (
                 <div className="welcome-container">
-                    <div className="welcome-title"><div>Xin chào</div></div>
+                    <div className="welcome-title">
+                        <span>Xin chào</span>
+                        <img className="heart" src={`${config.image_path}/images/heart.svg`} alt=''/>
+                    </div>
                     <div className="container">
                         <div className="row my-1">
                             <div className="col-lg-6 col-12 my-1 d-flex justify-content-lg-end justify-content-center">

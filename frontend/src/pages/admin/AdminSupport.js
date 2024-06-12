@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react'
 import { config } from '../../config'
-import axios from 'axios'
+// import axios from 'axios'
 import { FaReply } from "react-icons/fa";
 import { GlobalContext } from '../../store/GlobalContext';
 import { FaTrash } from "react-icons/fa";

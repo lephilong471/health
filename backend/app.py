@@ -11,8 +11,11 @@ import cv2
 # from config import tesseract_cmd
 import json
 import bcrypt
-import keras
+# import tensorflow
 import numpy
+import torch
+from search_model import predict_image
+
 app = Flask(__name__)
 
 app.config['JWT_SECRET_KEY'] = '0969099045'
@@ -21,7 +24,7 @@ app.config.from_pyfile('config.py')
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 app.config.update(
-    MODEL_PATH = os.path.join(dir_path, "static/model/model.h5"),
+    MODEL_PATH = os.path.join(dir_path, "static/model/torch_model.pth"),
     UPLOADED_PATH = os.path.join(dir_path, "static/temp/"),
     PUBLIC_PATH = os.path.join(dir_path, "static/public/"),
     DROPZONE_ALLOWED_FILE_TYPE = "image",
@@ -32,7 +35,7 @@ app.config.update(
 CORS(app)
 dropzone = Dropzone(app)
 jwt = JWTManager(app)
-image_search_model = keras.models.load_model(app.config['MODEL_PATH'])
+# image_search_model = tensorflow.keras.models.load_model(app.config['MODEL_PATH'])
 list_indices = {'Blueye': 0,
                 'Britop': 1,
                 'Eyecool': 2,
@@ -180,7 +183,7 @@ def search(value):
     if value == "": return ""
     
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE name LIKE '%"+value+"%'")
+    cursor.execute("SELECT * FROM medicine WHERE name LIKE '%"+value.upper()+"%'")
     result = []
     for i in cursor.fetchall():
         result.append({
@@ -221,21 +224,16 @@ def search_file_upload():
         f = request.files.get('file')
         file_location = os.path.join(app.config['UPLOADED_PATH'],f.filename)
         f.save(file_location)
-     
-        img = keras.preprocessing.image.load_img(file_location, target_size=(256, 256, 3))
-        x = keras.preprocessing.image.img_to_array(img)
-        x = numpy.expand_dims(x, axis = 0)
-        x /= 255
 
-        pred = image_search_model.predict(x)
-        index = numpy.argmax(pred[0])
-
+        prob = predict_image(file_location)
+        index = torch.argmax(prob).item()
         name = [item for item in list_indices if list_indices[item] == index][0]
+
         os.remove(file_location)
 
-        if(pred[0][index] > 0.8):
+        if(prob[index] > 0.09):
             cursor = mysql.cursor()
-            cursor.execute("SELECT id, name FROM medicine WHERE name like '%"+name+"%'")
+            cursor.execute("SELECT id, name FROM medicine WHERE name like '%"+name.upper()+"%'")
             data = cursor.fetchone()
             cursor.close()
             if(data != None):
@@ -327,7 +325,7 @@ def admin_add_product():
     p_description = str(request.form['description'])
    
     cursor = mysql.cursor()
-    cursor.execute("INSERT INTO medicine VALUES (NULL,'"+p_name+"','"+p_detail+"','"+p_path+"','"+p_price+"','"+p_description+"','"+p_type+"','"+str(datetime.now())+"','"+str(datetime.now())+"')")
+    cursor.execute("INSERT INTO medicine (name, detail, image_url, price, description, type, created_at, updated_at) VALUES ('"+p_name+"','"+p_detail+"','"+p_path+"','"+p_price+"','"+p_description+"','"+p_type+"','"+str(datetime.now())+"','"+str(datetime.now())+"')")
     mysql.commit()
     cursor.close()
     
@@ -424,23 +422,51 @@ def admin_model_evaluate():
     path = request.json['path']
     file_location = os.path.join(dir_path,path)
 
-    img = keras.preprocessing.image.load_img(file_location, target_size=(256, 256, 3))
-    x = keras.preprocessing.image.img_to_array(img)
-    x = numpy.expand_dims(x, axis = 0)
-    x /= 255
-    pred = image_search_model.predict(x)
-    index = numpy.argmax(pred[0])
-
+    prob = predict_image(file_location)
+    index = torch.argmax(prob).item()
+    
     data = []
     for i in list_indices:
         data.append({
             'name': i,
-            'value': str(pred[0][list_indices[i]])
+            'value': str(prob[list_indices[i]].item())
         })
 
     predict_name = [item for item in list_indices if list_indices[item] == index][0]
    
     return jsonify({'data': data, 'predict_name': predict_name}), 200
+
+@app.route('/api/admin/storage', methods=['GET','POST'])
+@jwt_required()
+def admin_storage():
+    if(request.method == 'GET'):
+        public_folder = os.listdir(app.config['PUBLIC_PATH']+'drugs/')
+        temp_folder = os.listdir(app.config['UPLOADED_PATH'])
+        return jsonify({
+            'product_image': public_folder,
+            'temp_image': temp_folder
+        }),200
+    elif(request.method == 'POST'):
+        request_type = request.json['type']
+        if(request_type == 'edit'):
+            old_path = 'drugs/'+ request.json['old_path']
+            new_path = 'drugs/'+ request.json['new_path']
+            os.rename(app.config['PUBLIC_PATH']+old_path,app.config['PUBLIC_PATH']+new_path)
+            return jsonify({'msg': 'Updated Path Successfully!'}), 200
+        elif(request_type == 'delete'):
+            filename = request.json['filename']
+            file_location = os.path.join(app.config['UPLOADED_PATH'],filename)
+            os.remove(file_location)
+            return jsonify({'msg': 'Delete Successfully!'}), 200
+   
+
+@app.route('/api/admin/upload-to-storage',methods=['POST'])
+@jwt_required()
+def admin_upload_to_storage():
+    f = request.files.get('file')
+    file_location = os.path.join(app.config['PUBLIC_PATH'],'drugs/'+f.filename)
+    f.save(file_location)
+    return jsonify({'msg': 'Upload To Storage Successfully!'}), 200
 
 @app.route('/test', methods=['GET'])
 @jwt_required()
