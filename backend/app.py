@@ -231,7 +231,7 @@ def search_file_upload():
 
         os.remove(file_location)
 
-        if(prob[index] > 0.09):
+        if(prob[index] > 0.8):
             cursor = mysql.cursor()
             cursor.execute("SELECT id, name FROM medicine WHERE name like '%"+name.upper()+"%'")
             data = cursor.fetchone()

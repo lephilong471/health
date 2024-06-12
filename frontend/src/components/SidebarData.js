@@ -32,11 +32,11 @@ export const SidebarData = [
             }
         ]
     },
-    {
-        title: 'Dịch vụ',
-        path: '/pages/service',
-        icon: "/images/heal.svg"
-    },
+    // {
+    //     title: 'Dịch vụ',
+    //     path: '/pages/service',
+    //     icon: "/images/heal.svg"
+    // },
     {
         title: 'Hỗ trợ',
         path: '/pages/support',
@@ -54,5 +54,15 @@ export const SidebarWidthData = [
         title: 'Thông tin khám',
         path: '/pages/info',
         icon: '/images/info.svg'
+    },
+    {
+        title: 'Điều khoản',
+        path: '/pages/term-of-use',
+        icon: '/images/term.svg'
+    },
+    {
+        title: 'Bảo mật',
+        path: '/pages/secure-policy',
+        icon: '/images/secure.svg'
     }
 ]

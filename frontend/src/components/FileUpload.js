@@ -8,6 +8,7 @@ import { IoClose } from "react-icons/io5";
 import axios from "axios"
 import {Link} from 'react-router-dom'
 import { GlobalContext } from '../store/GlobalContext.js';
+import Loading from './Loading.js';
 
 const FileUpload = () => {
     const inputRef = useRef()
@@ -143,10 +144,12 @@ const FileUpload = () => {
 
                     </div> */}
                     {/* Button to finalize upload or clear selection */}
-                    <button className="upload-btn" onClick={handleUpload}>
-                        {uploadStatus === "select" || uploadStatus === "uploading" ? "Tìm kiếm" : "Xong"}
-                    </button>
-                    
+                    {uploadStatus !== 'uploading' && (
+                        <button className="upload-btn" onClick={handleUpload}>
+                            {uploadStatus === "select" || uploadStatus === "uploading" ? "Tìm kiếm" : "Xong"}
+                        </button>
+                    )}
+  
                     {/* <div className="d-flex justify-content-around">
                         {uploadStatus === "done" && (
                             <button className='btn btn-primary my-2' onClick={handleResult}>View result</button>
@@ -163,6 +166,10 @@ const FileUpload = () => {
                             </Link>
                         </div>
 
+                    )}
+
+                    {uploadStatus === "uploading" && (
+                        <Loading/>
                     )}
 
                     {!imageResult && uploadStatus === "done" && (
