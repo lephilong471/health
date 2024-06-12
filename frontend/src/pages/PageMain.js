@@ -19,7 +19,10 @@ const PageMain = ({component}) => {
             method:'GET',
             url:'https://weatherplus.vn/api/v1/weather/now?lat=10.3645799&lng=106.6781219',
             headers:{
-                'Content-Type' : 'application/x-www-form-urlencoded; charset=UTF-8'
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
             }
         })
             .then(res=> setWeather(res.data.data))

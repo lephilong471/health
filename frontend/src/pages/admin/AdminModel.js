@@ -3,6 +3,7 @@ import { GlobalContext } from '../../store/GlobalContext'
 import axios from 'axios'
 import { config } from '../../config';
 import { IoClose } from "react-icons/io5";
+import Loading from '../../components/Loading';
 
 const AdminModel = () => {
     const [selectedFile, setSelectedFile] = useState(null)
@@ -11,6 +12,7 @@ const AdminModel = () => {
     const [resultData, setResultData] = useState(null)
     const [resultName, setResultName] = useState(null)
     const [viewImage, setViewImage] = useState(null)
+    const [loadStatus, setLoadStatus] = useState(false)
 
     const handleFileChange = (event) => {
         if(event.target.files && event.target.files.length>0){
@@ -42,6 +44,7 @@ const AdminModel = () => {
     const handleResult = () => {
         if(!selectedFile && !viewImage) alert('Vui lòng chọn file')
         else{
+            setLoadStatus(true)
             axios({
                 method:'POST',
                 url:`${config.proxy}/api/admin/model-evaluate`,
@@ -56,6 +59,7 @@ const AdminModel = () => {
                     response.access_token && setAdminToken(response.access_token)
                     setResultData(response.data.data)
                     setResultName(response.data.predict_name)
+                    setLoadStatus(false)
                 }
             })
         }
@@ -122,7 +126,10 @@ const AdminModel = () => {
                             <h3 className="fst-italic">Kết quả dự đoán</h3>
                         )}
 
-                        {resultName === inputRef }
+                        {loadStatus && (
+                            <Loading/>
+                        )}   
+
                         {resultData && resultData.map((item, index) => {
                             return(
                                 resultName === item.name ? (
@@ -133,7 +140,6 @@ const AdminModel = () => {
                                 )
                             )
                         })}
-                    
                         </div>
                     </div>
             </div>
