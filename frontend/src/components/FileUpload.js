@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react'
+import React, {useRef, useState, useContext} from 'react'
 import { MdOutlineUploadFile } from "react-icons/md";
 import { FiFileText } from "react-icons/fi";
 import "../assets/FileUpload.css"
@@ -7,15 +7,17 @@ import { TiTick } from "react-icons/ti";
 import { IoClose } from "react-icons/io5";
 import axios from "axios"
 import {Link} from 'react-router-dom'
+import { GlobalContext } from '../store/GlobalContext.js';
+import Loading from './Loading.js';
 
 const FileUpload = () => {
     const inputRef = useRef()
-
+    const {setShowUpload} = useContext(GlobalContext)
     const [selectedFile, setSelectedFile] = useState(null)
     const [progress, setProgress] = useState(0)
     const [uploadStatus, setUploadStatus] = useState("select") // "select" | "uploading" | "done"
-    const [imageResult, setImageResult] = useState([])
-    const [viewResult, setViewResult] = useState(false)
+    const [imageResult, setImageResult] = useState(null)
+    // const [viewResult, setViewResult] = useState(false)
 
     // Handle file change event
     const handleFileChange = (event) => {
@@ -35,8 +37,7 @@ const FileUpload = () => {
         setSelectedFile(null)
         setProgress(0)
         setUploadStatus("select")
-        setImageResult([])
-        setViewResult(false)
+        setImageResult(null)
     }
 
     //Function to handle file upload
@@ -50,7 +51,7 @@ const FileUpload = () => {
 
         try{
             // Set upload status to "uploading"
-            setUploadStatus("Uploading")
+            setUploadStatus("uploading")
 
             // Create FormData and append selected file
             const formData = new FormData()
@@ -69,7 +70,13 @@ const FileUpload = () => {
                         setProgress(percentCompleted)
                     }
                 }
-            )
+            ).then(function(response){
+                if(response.status === 200){
+                    if(response.data.data){
+                        setImageResult(response.data.data)
+                    }
+                }
+            })
 
             // await axios.fetch(`${config.proxy}/api/product-eyes`).then(res=>res.json).then(data=> console.log(data))
             setUploadStatus("done")
@@ -79,13 +86,13 @@ const FileUpload = () => {
         }
     }
 
-    const handleResult = () => {
-        fetch(`${config.proxy}/api/search-file-upload/${selectedFile.name}`).then(res=>res.json())
-                                                                    .then(data => setImageResult(data))
+    // const handleResult = () => {
+    //     fetch(`${config.proxy}/api/search-file-upload/${selectedFile.name}`).then(res=>res.json())
+    //                                                                 .then(data => setImageResult(data))
 
         
-        setViewResult(true)
-    }
+    //     setViewResult(true)
+    // }
 
     return (
         <div>
@@ -94,7 +101,7 @@ const FileUpload = () => {
             {!selectedFile && (
                 <div className="d-flex justify-content-center">
                     <button className="file-btn" onClick={onChooseFile}>
-                        <MdOutlineUploadFile class="uploadIcon"/> Upload File
+                        <MdOutlineUploadFile class="uploadIcon"/> Chọn hình ảnh
                     </button>
                 </div>
             )}
@@ -137,17 +144,38 @@ const FileUpload = () => {
 
                     </div> */}
                     {/* Button to finalize upload or clear selection */}
-                    <button className="upload-btn" onClick={handleUpload}>
-                        {uploadStatus === "select" || uploadStatus === "uploading" ? "Upload" : "Done"}
-                    </button>
-                    
-                    <div className="d-flex justify-content-around">
+                    {uploadStatus !== 'uploading' && (
+                        <button className="upload-btn" onClick={handleUpload}>
+                            {uploadStatus === "select" || uploadStatus === "uploading" ? "Tìm kiếm" : "Xong"}
+                        </button>
+                    )}
+  
+                    {/* <div className="d-flex justify-content-around">
                         {uploadStatus === "done" && (
                             <button className='btn btn-primary my-2' onClick={handleResult}>View result</button>
                         )}
-                    </div>
+                    </div> */}
+                    
+                    {imageResult && uploadStatus === "done" && (
+                        <div className="my-2">
+                            <Link className="fw-bold fst-italic"
+                                to={`${config.host}/pages/product/detail/${imageResult.product_id}`}
+                                onClick = {() => setShowUpload(false)}
+                            >
+                                {imageResult.product_name}
+                            </Link>
+                        </div>
 
-                    {Object.keys(imageResult).length > 0 && imageResult.map((item,index)=>{
+                    )}
+
+                    {uploadStatus === "uploading" && (
+                        <Loading/>
+                    )}
+
+                    {!imageResult && uploadStatus === "done" && (
+                        <div className="my-2 fst-italic">Không tìm thấy sản phẩm phù hợp</div>
+                    )}
+                    {/* {Object.keys(imageResult).length > 0 && imageResult.map((item,index)=>{
                         
                         return (
                             <a href={`${config.host}/pages/product/detail/${item['id']}`} key={index}>
@@ -160,7 +188,7 @@ const FileUpload = () => {
                         <>
                             Không tìm thấy kết quả phù hợp
                         </>
-                     )}
+                     )} */}
                     
                 </div>
             )}

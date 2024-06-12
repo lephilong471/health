@@ -1,23 +1,30 @@
 from flask import Flask, jsonify, request
-import mysql.connector
+# import mysql.connector
+import psycopg2
 from flask_cors import CORS
 from flask_dropzone import Dropzone
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, unset_jwt_cookies, get_jwt, get_jwt_identity
 from datetime import datetime, timedelta, timezone
 import os
 import cv2
-import pytesseract
-from config import tesseract_cmd
+# import pytesseract
+# from config import tesseract_cmd
 import json
 import bcrypt
+# import tensorflow
+import numpy
+import torch
+from search_model import predict_image
 
 app = Flask(__name__)
 
 app.config['JWT_SECRET_KEY'] = '0969099045'
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
+app.config.from_pyfile('config.py')
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 app.config.update(
+    MODEL_PATH = os.path.join(dir_path, "static/model/torch_model.pth"),
     UPLOADED_PATH = os.path.join(dir_path, "static/temp/"),
     PUBLIC_PATH = os.path.join(dir_path, "static/public/"),
     DROPZONE_ALLOWED_FILE_TYPE = "image",
@@ -28,6 +35,26 @@ app.config.update(
 CORS(app)
 dropzone = Dropzone(app)
 jwt = JWTManager(app)
+# image_search_model = tensorflow.keras.models.load_model(app.config['MODEL_PATH'])
+list_indices = {'Blueye': 0,
+                'Britop': 1,
+                'Eyecool': 2,
+                'Flucan': 3,
+                'Fortipred': 4,
+                'Fumeron': 5,
+                'Hexami': 6,
+                'Hwabra': 7,
+                'Immutussin': 8,
+                'Levaeyes': 9,
+                'Levoleo 500': 10,
+                'Lumix': 11,
+                'Luxavision': 12,
+                'Novolegic': 13,
+                'Novotane softcap': 14,
+                'Philevomels': 15,
+                'Philoclex': 16,
+                'Posod': 17,
+                'Quinovid': 18}
 
 @app.after_request
 def after_request(response):
@@ -52,8 +79,11 @@ def refresh_expiring_jwts(response):
         # Case where there is not a valid JWT. Just return the original respone
         return response
 
-mysql = mysql.connector.connect(host='localhost',port='3306',database='health',user='root',
-                                password='123456')
+mysql = psycopg2.connect(host=app.config['DATABASE_HOST'],
+                                port=app.config['DATABASE_PORT'],
+                                database=app.config['DATABASE_NAME'],
+                                user=app.config['DATABASE_USER'],
+                                password=app.config['DATABASE_PASSWORD'])
 
 
 @app.route('/')
@@ -62,6 +92,7 @@ def Index():
 #     cur.execute('INSERT INTO data VALUES (6,2)')
 #     mysql.commit()
 #     cur.close()
+    # return send_from_directory(app.static_folder)
     return 'Success'
 
 # Start of function
@@ -80,7 +111,7 @@ def convert_product(data):
     return result
 
 def image_to_text(image_path):
-    pytesseract.pytesseract.tesseract_cmd = tesseract_cmd
+    pytesseract.pytesseract.tesseract_cmd = app.config['tesseract_cmd']
         
     img = cv2.imread(image_path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -101,7 +132,7 @@ def search_product_from_string(sentence):
     result = []
 
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine")
+    cursor.execute("SELECT * FROM medicine ORDER BY id")
     products = convert_product(cursor.fetchall())
     cursor.close()
     
@@ -119,7 +150,7 @@ def search_product_from_string(sentence):
 @app.route('/api/product-eyes')
 def productEyes():
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE type = 0")
+    cursor.execute("SELECT * FROM medicine WHERE type = 0 ORDER BY id")
     result = convert_product(cursor.fetchall())
     cursor.close()
     return result
@@ -127,7 +158,7 @@ def productEyes():
 @app.route('/api/product-child')
 def productChild():
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE type = 1")
+    cursor.execute("SELECT * FROM medicine WHERE type = 1 ORDER BY id")
     result = convert_product(cursor.fetchall())
     cursor.close()
     return result
@@ -135,7 +166,7 @@ def productChild():
 @app.route('/api/product-other')
 def productOther():
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE type = 2")
+    cursor.execute("SELECT * FROM medicine WHERE type = 2 ORDER BY id")
     result = convert_product(cursor.fetchall())
     cursor.close()
     return result
@@ -152,7 +183,7 @@ def search(value):
     if value == "": return ""
     
     cursor = mysql.cursor()
-    cursor.execute("SELECT * FROM medicine WHERE name LIKE '%"+value+"%'")
+    cursor.execute("SELECT * FROM medicine WHERE name LIKE '%"+value.upper()+"%'")
     result = []
     for i in cursor.fetchall():
         result.append({
@@ -161,31 +192,59 @@ def search(value):
         })
     return result
 
+# @app.route('/api/search-file-upload',methods=['POST'])
+# def search_file_upload():        
+#     if request.method == 'POST':
+#         f = request.files.get('file')
+#         filename, extension = f.filename.split(".")
+#         hash_name = str(abs(hash(f.filename)))
+
+#         file_location = os.path.join(app.config['UPLOADED_PATH'],filename)
+#         f.save(file_location)
+     
+#         sentence = image_to_text(file_location)
+#         search = search_product_from_string(sentence)
+
+#         print('Sentence',sentence)
+#         # INSERT TO image_to_text TABLE
+#         cursor = mysql.cursor()
+#         for product_id in search:
+#             query = "INSERT INTO image_to_text VALUES (NULL,'" + f.filename + "','" + hash_name + "'," + str(product_id) + ",'" + str(datetime.now()) + "','" + str(datetime.now()) + "')"
+#             cursor.execute(query)
+#         mysql.commit()
+
+#         os.remove(file_location)
+#         cursor.close()
+
+#     return 'Success'
+
 @app.route('/api/search-file-upload',methods=['POST'])
 def search_file_upload():        
     if request.method == 'POST':
         f = request.files.get('file')
-        filename, extension = f.filename.split(".")
-        hash_name = str(abs(hash(f.filename)))
-
-        file_location = os.path.join(app.config['UPLOADED_PATH'],filename)
+        file_location = os.path.join(app.config['UPLOADED_PATH'],f.filename)
         f.save(file_location)
-     
-        sentence = image_to_text(file_location)
-        search = search_product_from_string(sentence)
 
-        print('Sentence',sentence)
-        # INSERT TO image_to_text TABLE
-        cursor = mysql.cursor()
-        for product_id in search:
-            query = "INSERT INTO image_to_text VALUES (NULL,'" + f.filename + "','" + hash_name + "'," + str(product_id) + ",'" + str(datetime.now()) + "','" + str(datetime.now()) + "')"
-            cursor.execute(query)
-        mysql.commit()
+        prob = predict_image(file_location)
+        index = torch.argmax(prob).item()
+        name = [item for item in list_indices if list_indices[item] == index][0]
 
         os.remove(file_location)
-        cursor.close()
 
-    return 'Success'
+        if(prob[index] > 0.8):
+            cursor = mysql.cursor()
+            cursor.execute("SELECT id, name FROM medicine WHERE name like '%"+name.upper()+"%'")
+            data = cursor.fetchone()
+            cursor.close()
+            if(data != None):
+                return jsonify({'data':{
+                    'product_id': data[0],
+                    'product_name': data[1]
+                }}), 200
+            else:
+                return jsonify({'msg':'Not Found!'}), 200
+        else:
+            return jsonify({'msg':'Not Found!'}), 200
 
 @app.route('/api/search-file-upload/<string:image_name>',methods=['GET'])
 def getImage(image_name):
@@ -227,7 +286,7 @@ def admin_logout():
 @app.route('/api/admin/get-all-products')
 def admin_get_all_products():
     cursor = mysql.cursor()
-    cursor.execute('SELECT * FROM medicine')
+    cursor.execute('SELECT * FROM medicine ORDER BY id')
     data = convert_product(cursor.fetchall())
     cursor.close()
     return data
@@ -266,7 +325,7 @@ def admin_add_product():
     p_description = str(request.form['description'])
    
     cursor = mysql.cursor()
-    cursor.execute("INSERT INTO medicine VALUES (NULL,'"+p_name+"','"+p_detail+"','"+p_path+"','"+p_price+"','"+p_description+"','"+p_type+"','"+str(datetime.now())+"','"+str(datetime.now())+"')")
+    cursor.execute("INSERT INTO medicine (name, detail, image_url, price, description, type, created_at, updated_at) VALUES ('"+p_name+"','"+p_detail+"','"+p_path+"','"+p_price+"','"+p_description+"','"+p_type+"','"+str(datetime.now())+"','"+str(datetime.now())+"')")
     mysql.commit()
     cursor.close()
     
@@ -279,6 +338,7 @@ def client_get_message(clientID):
     data = []
     for i in cursor.fetchall():
         data.append({
+            'id': i[0],
             'client_message': i[2],
             'admin_message': i[3]
         })
@@ -296,6 +356,117 @@ def client_send_message():
     mysql.commit()
     cursor.close()
     return jsonify({'msg': 'Client Add Message Successfully!'}), 200
+
+@app.route('/api/admin/get-chat-clientID', methods=['GET'])
+@jwt_required()
+def admin_get_chat_clientID():
+    cursor = mysql.cursor()
+    cursor.execute("SELECT DISTINCT(clientID) FROM support")
+    clientIDs = cursor.fetchall()
+    data = []
+    for clientID in clientIDs:
+        cursor.execute("SELECT * FROM support WHERE admin_message IS NULL AND clientID = '"+clientID[0]+"'")
+        data.append({
+            'clientID':clientID[0],
+            'noreply': len(cursor.fetchall())
+            }
+        )
+    
+    cursor.close()
+    return data
+
+@app.route('/api/admin/send-message', methods=['POST'])
+@jwt_required()
+def admin_send_message():
+    admin_message = str(request.json['admin_message'])
+    reply_id = str(request.json['reply_id'])
+    
+    cursor = mysql.cursor()
+    cursor.execute("UPDATE support SET admin_message = '"+admin_message+"', updated_at = '"+ str(datetime.now())+"' WHERE id ='"+reply_id+"'")
+    mysql.commit()
+    cursor.close()
+
+    return jsonify({'msg':'Updated Successfully!'}), 200
+
+@app.route('/api/admin/delete-room', methods=['POST'])
+@jwt_required()
+def admin_delete_room():
+    clientID = request.json['clientID']
+    cursor = mysql.cursor()
+    cursor.execute("DELETE FROM support WHERE clientID ='"+clientID+"'")
+    mysql.commit()
+    cursor.close()
+    return jsonify({'msg': 'Delete Room Successfully'}), 200
+
+@app.route('/api/admin/view-image/<string:action>', methods=['POST'])
+@jwt_required()
+def admin_view_image(action):
+    if(action == "add"):
+        f = request.files.get('file')
+        filename, extension = f.filename.split('.')
+        hashfile = str(abs(hash(filename + '-' + str(datetime.now())))) + '.' +extension
+        file_location = os.path.join(app.config['UPLOADED_PATH'], hashfile)
+        f.save(file_location)
+        return jsonify({'path': 'static/temp/'+hashfile}), 200
+    else:
+        path = request.json['path']
+        file_location = os.path.join(dir_path,path)
+        os.remove(file_location)
+        return jsonify({'msg': 'Delete View Image Successfully!'}), 200
+    return True
+
+
+@app.route('/api/admin/model-evaluate', methods=['POST'])
+@jwt_required()
+def admin_model_evaluate():
+    path = request.json['path']
+    file_location = os.path.join(dir_path,path)
+
+    prob = predict_image(file_location)
+    index = torch.argmax(prob).item()
+    
+    data = []
+    for i in list_indices:
+        data.append({
+            'name': i,
+            'value': str(prob[list_indices[i]].item())
+        })
+
+    predict_name = [item for item in list_indices if list_indices[item] == index][0]
+   
+    return jsonify({'data': data, 'predict_name': predict_name}), 200
+
+@app.route('/api/admin/storage', methods=['GET','POST'])
+@jwt_required()
+def admin_storage():
+    if(request.method == 'GET'):
+        public_folder = os.listdir(app.config['PUBLIC_PATH']+'drugs/')
+        temp_folder = os.listdir(app.config['UPLOADED_PATH'])
+        return jsonify({
+            'product_image': public_folder,
+            'temp_image': temp_folder
+        }),200
+    elif(request.method == 'POST'):
+        request_type = request.json['type']
+        if(request_type == 'edit'):
+            old_path = 'drugs/'+ request.json['old_path']
+            new_path = 'drugs/'+ request.json['new_path']
+            os.rename(app.config['PUBLIC_PATH']+old_path,app.config['PUBLIC_PATH']+new_path)
+            return jsonify({'msg': 'Updated Path Successfully!'}), 200
+        elif(request_type == 'delete'):
+            filename = request.json['filename']
+            file_location = os.path.join(app.config['UPLOADED_PATH'],filename)
+            os.remove(file_location)
+            return jsonify({'msg': 'Delete Successfully!'}), 200
+   
+
+@app.route('/api/admin/upload-to-storage',methods=['POST'])
+@jwt_required()
+def admin_upload_to_storage():
+    f = request.files.get('file')
+    file_location = os.path.join(app.config['PUBLIC_PATH'],'drugs/'+f.filename)
+    f.save(file_location)
+    return jsonify({'msg': 'Upload To Storage Successfully!'}), 200
 
 @app.route('/test', methods=['GET'])
 @jwt_required()

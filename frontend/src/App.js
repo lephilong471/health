@@ -13,7 +13,9 @@ import PageMain from './pages/PageMain';
 import Page404 from './pages/Page404';
 import PageIntroduce from './pages/PageIntroduce';
 import PageSupport from './pages/PageSupport'
-
+import PageTermOfUse from './pages/PageTermOfUse'
+import PageService from './pages/PageService'
+import PageSecurePolicy from './pages/PageSecurePolicy'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { GlobalProvider } from './store/GlobalProvider';
 
@@ -21,6 +23,12 @@ import { GlobalProvider } from './store/GlobalProvider';
 import AdminLogin from './components/admin/AdminLogin'
 import AdminPageMain from './pages/admin/AdminPageMain'
 import AdminProduct from './pages/admin/AdminProduct'
+import AdminSupport from './pages/admin/AdminSupport'
+import AdminChatRoom from './pages/admin/AdminChatRoom'
+import AdminModel from './pages/admin/AdminModel'
+import AdminStorage from './pages/admin/AdminStorage'
+
+import { config } from './config';
 
 function App() {
   return (
@@ -37,11 +45,18 @@ function App() {
             <Route path="/pages/about" element = {<PageIntroduce component={<PageAbout/>}/>}/>
             <Route path="/pages/info" element = {<PageIntroduce component={<PageInfo/>}/>}/>
             <Route path="/pages/support" element = {<PageMain component={<PageSupport/>}/>}/>
+            <Route path="/pages/term-of-use" element={<PageIntroduce component={<PageTermOfUse/>}/>}/>
+            <Route path="/pages/secure-policy" element={<PageIntroduce component={<PageSecurePolicy/>}/>}/>
+            <Route path="/pages/service" element={<PageMain component={<PageService/>}/>}/>
+
 
             {/* Admin */}
-            <Route path="/admin" element = {<AdminLogin/>}/>
-            <Route path="/admin/pages/all-products" element = {<AdminPageMain component={<AdminProduct/>}/>}/>
-            <Route path="/admin/pages/support" element = {<AdminLogin/>}/>
+            <Route path={`/${config.admin_path}`} element = {<AdminLogin/>}/>
+            <Route path={`/${config.admin_path}/pages/all-products`} element = {<AdminPageMain component={<AdminProduct/>}/>}/>
+            <Route path={`/${config.admin_path}/pages/support`} element = {<AdminPageMain component={<AdminSupport/>}/>}/>
+            <Route path={`/${config.admin_path}/pages/support-room-chat/:clientID`} element={<AdminPageMain component={<AdminChatRoom/>}/>}/>
+            <Route path={`/${config.admin_path}/pages/model-evaluate`} element = {<AdminPageMain component={<AdminModel/>}/>}/>
+            <Route path={`/${config.admin_path}/pages/storage`} element = {<AdminPageMain component={<AdminStorage/>}/>}/>
           </Routes>
           {/* <Header />
           <div className="pageContent">
