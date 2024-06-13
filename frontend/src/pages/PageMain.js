@@ -5,6 +5,7 @@ import Footer from '../components/Footer'
 import { useLocation } from 'react-router-dom'
 import { config } from '../config'
 import axios from 'axios'
+import Loading from '../components/Loading'
 
 const PageMain = ({component}) => {
     const location = useLocation()
@@ -57,7 +58,11 @@ const PageMain = ({component}) => {
                             <div className="col-lg-6 col-12 my-1 d-flex justify-content-lg-start justify-content-center">
                                 <div className="welcome-card welcard-2">
                                     <img src='/images/weather.svg' alt=''/>
-                                    <span className="fw-bold">{weather.state}</span>
+                                    {Object.keys(weather).length > 0 ? (
+                                        <span className="fw-bold">{weather.state}</span>
+                                    ):(
+                                        <Loading/>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -71,7 +76,11 @@ const PageMain = ({component}) => {
                             <div className="col-lg-6 col-12 my-1 d-flex justify-content-lg-start justify-content-center">
                                 <div className="welcome-card welcard-4">
                                     <img src='/images/celcius.svg' alt=''/>
-                                    <span className="fw-bold">{`${weather.temperature}°C`}</span>
+                                    {Object.keys(weather).length > 0 ? (
+                                        <span className="fw-bold">{`${weather?.temperature}°C`}</span>
+                                    ):(
+                                        <Loading/>
+                                    )}
                                 </div>
                             </div>
                         </div>
