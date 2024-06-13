@@ -17,12 +17,16 @@ const FileUpload = () => {
     const [progress, setProgress] = useState(0)
     const [uploadStatus, setUploadStatus] = useState("select") // "select" | "uploading" | "done"
     const [imageResult, setImageResult] = useState(null)
+    const extension = ['jpg', 'jpeg', 'png']
     // const [viewResult, setViewResult] = useState(false)
 
     // Handle file change event
     const handleFileChange = (event) => {
         if(event.target.files && event.target.files.length > 0){
-            setSelectedFile(event.target.files[0])
+            if(extension.includes(event.target.files[0].name.split('.')[1]))
+                setSelectedFile(event.target.files[0])
+            else
+                alert('Ảnh không hợp lệ')
         }
     }
 

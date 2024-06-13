@@ -40,6 +40,11 @@
     .chat-content .client-message, .chat-content .admin-message{
         max-width:260px;
     }
+
+    .collapseNav{
+        overflow-y:scroll;
+        overflow-x:hidden;
+    }
 }
 
 
