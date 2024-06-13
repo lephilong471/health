@@ -545,7 +545,7 @@
   width:0px;
 }
 
-.deleteIcon:hover, .editIcon:hover, .uploadIcon:hover{
+.deleteIcon:hover, .editIcon:hover, .uploadIcon:hover, .returnIcon{
   cursor:pointer;
 }
 
