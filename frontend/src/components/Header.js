@@ -2,7 +2,6 @@ import React, {useState} from 'react'
 import {Link} from 'react-router-dom'
 import {SearchResult} from './SearchResult'
 import SearchBar from './SearchBar'
-import { config } from '../config'
 
 const Header = () => {
     const [result, setResult] = useState([])
@@ -11,7 +10,7 @@ const Header = () => {
         <div className="header">
             <div className="headerLogo">
                 <Link to="/" >
-                    <img src={`${config.image_path}/images/logo.svg`} alt=''/>
+                    <img src='/images/logo.svg' alt=''/>
                 </Link>
             </div>
             <div className="headerContent">

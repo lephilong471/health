@@ -36,12 +36,13 @@ const PageEyes = () => {
     // console.log(preprocess(data))
     // console.log(data)
     return (
-        <div className="container position-relative mx-0"
-            style={deviceWidth > 450 ? {left: closeNav ? '80px' : '280px'}:{left: '80px'}}
-        >
-            <div className="row">   
-                    {Object.keys(data).length > 1 ? (
-                        data.map((item, index) => {
+        <>
+            {Object.keys(data).length > 1 ? (
+                <div className="container position-relative mx-0"
+                style={deviceWidth > 450 ? {left: closeNav ? '80px' : '280px'}:{left: '80px'}}
+                >
+                    <div className="row">   
+                        {data.map((item, index) => {
                             return (
                                 <div className="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12" key={index}>
                                     <Link class="text-decoration-none" to={`/pages/product/detail/${item.id}`}>
@@ -57,11 +58,13 @@ const PageEyes = () => {
                                     </Link>
                                 </div>
                             )
-                    })): (
-                        <Loading/>
-                    )}
-            </div>
-        </div>
+                        })}
+                    </div>
+                </div>
+            ):(
+                <Loading/>
+            )}
+        </>
     )
 }
 

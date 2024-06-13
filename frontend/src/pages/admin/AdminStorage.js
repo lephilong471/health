@@ -138,8 +138,8 @@ const AdminStorage = () => {
                             {productImage && productImage.map((item, index) => {
                                 return(
                                     <div key={index} className="d-flex justify-content-between align-items-center my-2 border-secondary-subtle border-bottom">
-                                        <img width={100} src={`${config.proxy}/static/public/drugs/${item}`} alt=''/>
-                                        <span>{item}</span>
+                                        <img height={80} src={`${config.proxy}/static/public/drugs/${item}`} alt=''/>
+                                        <span><b>/drugs/</b>{item}</span>
                                         <CiEdit size={25} className="text-warning editIcon" onClick={() => handleEdit(item)}/>
                                     </div>
                                 )
@@ -150,7 +150,7 @@ const AdminStorage = () => {
                             {tempImage && tempImage.map((item,index) => {
                                 return(
                                     <div key={index} className="d-flex justify-content-between align-items-center my-2 border-secondary-subtle border-bottom">
-                                        <img width={100} src={`${config.proxy}/static/temp/${item}`} alt=''/>
+                                        <img height={80} src={`${config.proxy}/static/temp/${item}`} alt=''/>
                                         <span>{item}</span>
                                         <FaTrash width ={25} onClick={() => deleteTemp(item)}className="text-danger deleteIcon"/>
                                     </div>

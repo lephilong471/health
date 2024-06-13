@@ -17,13 +17,7 @@ const PageMain = ({component}) => {
     useEffect(() => {
         axios({
             method:'GET',
-            url:'https://weatherplus.vn/api/v1/weather/now?lat=10.3645799&lng=106.6781219',
-            headers:{
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
-            }
+            url:`${config.proxy}/api/get-weather-data`,
         })
             .then(res=> setWeather(res.data.data))
             .catch(error => console.log(error))
@@ -50,19 +44,19 @@ const PageMain = ({component}) => {
                 <div className="welcome-container">
                     <div className="welcome-title">
                         <span>Xin chào</span>
-                        <img className="heart" src={`${config.image_path}/images/heart.svg`} alt=''/>
+                        <img className="heart" src='/images/heart.svg' alt=''/>
                     </div>
                     <div className="container">
                         <div className="row my-1">
                             <div className="col-lg-6 col-12 my-1 d-flex justify-content-lg-end justify-content-center">
                                 <div className="welcome-card welcard-1">
-                                    <img src={`${config.image_path}/images/location.svg`} alt=''/>
+                                    <img src='/images/location.svg' alt=''/>
                                     <div className="fw-bold">TP. Gò Công</div>
                                 </div>
                             </div>
                             <div className="col-lg-6 col-12 my-1 d-flex justify-content-lg-start justify-content-center">
                                 <div className="welcome-card welcard-2">
-                                    <img src={`${config.image_path}/images/weather.svg`} alt=''/>
+                                    <img src='/images/weather.svg' alt=''/>
                                     <span className="fw-bold">{weather.state}</span>
                                 </div>
                             </div>
@@ -70,13 +64,13 @@ const PageMain = ({component}) => {
                         <div className="row my-1">
                             <div className="col-lg-6 col-12 my-1 d-flex justify-content-lg-end justify-content-center">
                                 <div className="welcome-card welcard-3">
-                                    <img src={`${config.image_path}/images/time.svg`} alt=''/>
+                                    <img src='/images/time.svg' alt=''/>
                                     <span className="fw-bold">{clock}</span>
                                 </div>
                             </div>
                             <div className="col-lg-6 col-12 my-1 d-flex justify-content-lg-start justify-content-center">
                                 <div className="welcome-card welcard-4">
-                                    <img src={`${config.image_path}/images/celcius.svg`} alt=''/>
+                                    <img src='/images/celcius.svg' alt=''/>
                                     <span className="fw-bold">{`${weather.temperature}°C`}</span>
                                 </div>
                             </div>
