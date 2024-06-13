@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+import requests
 # import mysql.connector
 import psycopg2
 from flask_cors import CORS
@@ -95,6 +96,11 @@ def Index():
     # return send_from_directory(app.static_folder)
     return 'Success'
 
+@app.route('/api/get-weather-data',methods=['GET'])
+def get_weather_data():
+    res = requests.get('https://weatherplus.vn/api/v1/weather/now?lat=10.3645799&lng=106.6781219').json()
+    return res
+    
 # Start of function
 def convert_product(data):
     result = []

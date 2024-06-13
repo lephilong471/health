@@ -2,7 +2,6 @@ import React, {useContext} from 'react'
 import { Link } from 'react-router-dom'
 import { SidebarData } from './SidebarData'
 import { GlobalContext } from '../../store/GlobalContext'
-import { config } from '../../config'
 
 const Sidebar = () => {
     // const [show, setShow] = useState(false)
@@ -14,7 +13,7 @@ const Sidebar = () => {
         <div className="sidebarNav" style={{display: closeNav ? 'none': 'inline'}}>
                 <div className ="sidebarWrap">
                     <Link className="navIcon" to="#">
-                        <img src={`${config.image_path}/images/navbar.svg`} onClick={toggle} alt=''/>
+                        <img src='/images/navbar.svg' onClick={toggle} alt=''/>
                     </Link>
 
                     {SidebarData.map( (item, index) => {
@@ -24,7 +23,7 @@ const Sidebar = () => {
                                     <span className = 'sidebarLabel'>{item.title}</span>
                                 </div>
                                 <div>
-                                    <img src={config.image_path+item.icon} width={30} height={30} alt=''/>
+                                    <img src={item.icon} width={30} height={30} alt=''/>
                                 </div>
                             </Link>
                         )
@@ -35,14 +34,14 @@ const Sidebar = () => {
                 (
                     <div className='collapseNav'>
                         <Link className="navIcon" to="#">
-                            <img src={`${config.image_path}/images/navbar.svg`} onClick={toggle} alt=''/>
+                            <img src='/images/navbar.svg' onClick={toggle} alt=''/>
                         </Link>
                         
                         {SidebarData.map( (item, index) => {
                             return (
                                 <>
                                     <Link className="collapseIcon" to={item.path} key={index}>
-                                        <img src={config.image_path+item.icon} width={30} height={30} alt=''/>
+                                        <img src={item.icon} width={30} height={30} alt=''/>
                                     </Link>
                                 </>
                             )

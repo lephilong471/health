@@ -166,7 +166,7 @@ const AdminProduct = () => {
                 style={{left: closeNav ? '80px' : '280px'}}
             >
                 <div className="add-icon" onClick={handleAdd}>
-                    <img src={`${config.image_path}/images/add-product.svg`} alt=''/> Thêm sản phẩm
+                    <img src={'/images/add-product.svg'} alt=''/> Thêm sản phẩm
                 </div>
                 {data.map((item, index)=>{
                     return(
