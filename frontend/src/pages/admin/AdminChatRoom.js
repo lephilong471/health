@@ -67,8 +67,9 @@ const AdminChatRoom = () => {
     const handleSend = () => {
         if(messageSend === '') alert('Vui lòng nhập thông tin')
         else{
+            const preprocess = messageSend.split('\n').join('<br/>')
             updateDoc(doc(db,'support',reply),{
-                admin_message: messageSend,
+                admin_message: preprocess,
                 updated_at: serverTimestamp()
             })
             setMessageSend('')
@@ -108,16 +109,16 @@ const AdminChatRoom = () => {
                                    {item['admin_message'] !== null ? (
                                     <>
                                         <div className="d-flex align-items-center justify-content-start">  
-                                            <VscAccount size={25}/> <span className="client-message" key={index}>{item['client_message']}</span>
+                                            <VscAccount size={25}/> <span className="client-message" key={index} dangerouslySetInnerHTML={{__html:item.client_message}}/>
                                         </div>
                                         <div className="d-flex align-items-center justify-content-end">
-                                            <span className="admin-message" key={index}>{item['admin_message']}</span> <BiSupport size={25}/>
+                                            <span className="admin-message" key={index} dangerouslySetInnerHTML={{__html:item.admin_message}}/> <BiSupport size={25}/>
                                         </div>    
                                     </>
                                        
                                    ):(
                                        <div className="d-flex align-items-center justify-content-start">  
-                                            <VscAccount size={25}/> <span className="client-message" key={index}>{item['client_message']}</span>
+                                            <VscAccount size={25}/> <span className="client-message" key={index} dangerouslySetInnerHTML={{__html:item.client_message}}/>
                                             <HiReply className="reply-icon" onClick={() => handleReply(item['id'])}/>
                                         </div>
                                    )}
@@ -132,7 +133,7 @@ const AdminChatRoom = () => {
                 <Modal className="reply-modal" show={modal} onHide={()=> setModal(!modal)}>
                     <Modal.Body className="d-flex justify-content-center">
                         <div className="d-flex align-items-center">
-                            <input type="text" name="message" value={messageSend} onChange={(e)=>setMessageSend(e.target.value)} placeholder="Nhập tin nhắn"/>
+                            <textarea type="text" name="message" className="chat-input-message" value={messageSend} onChange={(e)=>setMessageSend(e.target.value)} placeholder="Nhập tin nhắn"/>
                             <RiSendPlaneFill className="admin-send-icon" onClick={handleSend}/>
                         </div>
                     </Modal.Body>

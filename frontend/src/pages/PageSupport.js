@@ -97,9 +97,10 @@ const PageSupport = () => {
     const handleSend = async () => {
         if(messageSend === '') alert('Vui lòng nhập thông tin')
         else{
+            const preprocess = messageSend.split('\n').join('<br/>')
             await addDoc(collection(db, 'support'),{
                 clientID: checkID,
-                client_message: messageSend,
+                client_message: preprocess,
                 admin_message: null,
                 created_at: serverTimestamp(),
                 updated_at:  serverTimestamp(),
@@ -196,13 +197,13 @@ const PageSupport = () => {
                                 <>
                                     <div className="d-flex align-items-center justify-content-end" key={item.id}>
                                         {/* <VscAccount size={25}/> <span className="client-message" key={index}>{item.data['client_message']}</span> */}
-                                       <span className="client-message">{item.client_message}</span> <VscAccount size={25}/> 
+                                       <span className="client-message" dangerouslySetInnerHTML={{__html:item.client_message}}/> <VscAccount size={25}/> 
                                     </div>
 
                                    {item.admin_message !== null && (
                                     <div className="d-flex align-items-center justify-content-start" key={index}>
                                         {/* <span className="admin-message" key={index}>{item.data['admin_message']}</span> <BiSupport size={25}/> */}
-                                        <BiSupport size={25}/> <span className="admin-message">{item.admin_message}</span>
+                                        <BiSupport size={25}/> <span className="admin-message" dangerouslySetInnerHTML={{__html:item.admin_message}}/>
                                     </div>        
                                    )}
                                 </>
