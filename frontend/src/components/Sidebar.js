@@ -28,7 +28,7 @@ const Sidebar = () =>{
                 </div>
             </div>
             
-            {closeNav &&
+            {closeNav && window.innerWidth > 450 &&
                 (
                     <div className='collapseNav' >
                         <Link className="navIcon" to="#">
