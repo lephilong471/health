@@ -1,9 +1,10 @@
 import React from 'react'
+// import Carousel from 'react-bootstrap/Carousel'
 
 const PageService = () => {
     return (
-        <div>
-            Service content
+        <div className="service-container">
+            Dịch vụ
         </div>
     )
 }

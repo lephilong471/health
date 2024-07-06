@@ -22,6 +22,10 @@
   font-family:'Lato';
 }
 
+.active-link{
+  background-color:red;
+}
+
 .navBar{
   background:aliceblue;
   height:50px;
@@ -41,16 +45,20 @@
 .sidebarNav{
   background: rgb(194,250,237);
   background: linear-gradient(135deg, rgba(194,250,237,1) 0%, rgba(255,233,191,1) 50%, rgba(227,229,245,1) 100%);
-  width: 280px;
-  height:calc(100vh - 100px);
+  width: 240px;
+  height:calc(100vh - 110px);
   display:flex;
   justify-content:center;
   position:fixed;
-  top:50px;
+  top:60px;
   transition: 350ms;
   z-index: 10;
   left:0;
   overflow-y:scroll;
+}
+
+.sidebarNav::-webkit-scrollbar{
+  width:0px;
 }
 
 .sidebarWrap{
@@ -62,7 +70,7 @@
   justify-content:space-around;
   align-items:center;
   color: #000000;
-  padding: 10px 20px;
+  padding: 8px 18px;
   margin:20px 10px;
   list-style:none;
   text-decoration:none;
@@ -79,15 +87,15 @@
 }
 
 .sidebarLabel{
-  margin-left:16px;
-  font-size:20px;
+  /* margin-left:16px; */
+  font-size:18px;
   font-weight:bold;
 }
 
 .dropdown{
   background: #ffffff;
   margin: 20px 10px 20px 40px;
-  padding: 10px 20px;
+  padding: 8px 18px;
   display:flex;
   justify-content: space-around;
   align-items:center;
@@ -104,7 +112,7 @@
 
 .collapseNav{
   position:fixed;
-  top:50px;
+  top:60px;
   background: rgb(194,250,237);
   background: linear-gradient(135deg, rgba(194,250,237,1) 0%, rgba(255,233,191,1) 50%, rgba(227,229,245,1) 100%);
   width:60px;
@@ -177,7 +185,7 @@
   text-align:center;
   border: 1px solid #DBDBDB;
   border-radius:12px;
-  padding: 4px 0;
+  padding: 4px 35px 4px 0px;
   width: 220px;
 }
 
@@ -195,7 +203,7 @@
 }
 
 .card{
-  width:200px;
+  width:180px;
   margin: 20px;
   align-items:center
 }
@@ -205,7 +213,7 @@
 }
 
 .card img{
-  width: 200px;
+  width: 100%;
   height: 160px;
   padding: 10px;
 }
@@ -218,7 +226,8 @@
 
 .search-list{
   position:absolute;
-  width: 200px;
+  margin-left:10px;
+  width: 220px;
   top:50px;
   background: linear-gradient(135deg, rgb(215, 250, 242) 0%, rgba(255,233,191,1) 100%);
   /* border:1px solid rgb(194,250,237); */
@@ -352,15 +361,16 @@
 }
 
 .welcome-container{
-  padding-bottom:20px;
+  padding:0 0 20px 0;
 }
 
 .welcome-container .welcome-title{
-  background-image:linear-gradient(135deg, rgba(255,181,94,1) 0%, rgba(255,104,104,1) 100%);
+  background-image:linear-gradient(0deg, rgba(255,181,94,1) 0%, rgba(255,104,104,1) 100%);
   color:transparent;
   background-clip:text;
   font-family: 'Pacifico';
   font-size:60px;
+  text-shadow: 2px 2px;
 }
 
 @keyframes pop{
@@ -413,7 +423,8 @@
   position:relative;
   height:calc(100vh - 110px);
   overflow-x:hidden; 
-
+  /* margin-left:60px; */
+  margin:0 10px;
   z-index:1;
   display:flex;
   justify-content:center;
@@ -433,14 +444,39 @@
   padding:10px 20px;
 }
 
+.emoji-icon{
+  font-size:25px;
+  position:relative;
+  right:30px;
+}
+
+.emoji-icon:hover{
+  cursor:pointer;
+}
 .send-icon{
   font-size:30px;
   margin: 0 10px;
+  position:absolute;
+  right:-35px;
 }
 
-.send-icon:hover{
+.admin-send-icon{
+  font-size:30px;
+  position:relative;
+  margin: 0 10px;
+}
+
+.admin-send-icon:hover, .send-icon:hover{
   cursor:pointer;
   color: coral;
+}
+
+.chat-input .emoji-picker{
+  position:absolute;
+  width:280px !important;
+  height:300px !important;
+  bottom:70px;
+  border:3px solid grey;
 }
 
 .chat-content{
@@ -451,9 +487,12 @@
   padding:20px;
   border-radius:20px;
   background: radial-gradient(circle, #FFF9FD, #FFFDD9);
+  min-height: calc(100vh - 250px) !important;
 }
 
 .client-message{
+  word-break: break-word;
+  max-width:300px;
   margin:10px;
   padding:10px;
   background: rgb(255,243,235);
@@ -464,6 +503,8 @@
 }
 
 .admin-message{
+  max-width:300px;
+  word-break: break-word;
   margin:10px;
   padding:10px;
   background: rgb(255,219,211);
@@ -471,4 +512,146 @@
   border-radius:20px;
   border:2px solid #000000;
   text-align:left;
+}
+
+.admin-view-image{
+  border: 1px solid #000000;
+  width: 200px;
+  margin: 20px 0;
+}
+
+.chat-input .chat-exit{
+  transform:rotateY(180deg);
+  font-size:20px;
+  margin: 0 25px 0 0;
+}
+
+.chat-input .chat-exit:hover{
+  color:lightseagreen;
+  cursor:pointer;
+}
+
+.chat-input-message{
+  resize:none;
+  outline:none;
+  height: 40px;
+  max-height: 100px;
+  width:300px;
+  padding: 10px 30px 10px 10px;
+  border-radius:10px;
+  border: 2px solid #000000;
+}
+
+.chat-input-message::-webkit-scrollbar{
+  width:0px;
+}
+
+.deleteIcon:hover, .editIcon:hover, .uploadIcon:hover, .returnIcon{
+  cursor:pointer;
+}
+
+.service-container{
+  position:relative;
+  height:calc(100vh - 110px);
+  overflow-x:hidden; 
+  z-index:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  left:60px;
+}
+
+.carousel-item img{
+  width:100vh;
+  height:calc(100vh - 110px);
+}
+
+.carousel-item
+{
+  background: rgb(255,216,216);
+  background: linear-gradient(135deg, rgba(255,216,216,1) 0%, rgba(255,250,206,1) 100%);
+}
+
+.heart{
+  position:relative;
+  bottom:5px;
+  margin:0 20px;
+}
+
+.loader {
+  position: relative;
+  margin: 0 auto;
+  width: 50px;
+}
+
+.loader::before{
+    content: '';
+    display: block;
+    padding-top: 100%;
+}
+
+.circular {
+  animation: rotate 2s linear infinite;
+  height: 100%;
+  transform-origin: center center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+.path {
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
+  stroke-linecap: round;
+}
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+
+@keyframes color {
+  100%, 0% {
+    stroke: #d62d20;
+  }
+
+  40% {
+    stroke: #0057e7;
+  }
+  66% {
+    stroke: #008744;
+  }
+  80%, 90% {
+    stroke: #ffa700;
+  }
+}
+
+.showbox {
+  position: relative;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5%;
 }

@@ -3,6 +3,7 @@ import { config, formatNumber } from '../config'
 import Card from 'react-bootstrap/Card'
 import { GlobalContext } from '../store/GlobalContext'
 import {Link} from 'react-router-dom'
+import Loading from '../components/Loading'
 
 const PageEyes = () => {
     const [data, setData] = useState([{}])
@@ -35,30 +36,38 @@ const PageEyes = () => {
     // console.log(preprocess(data))
     // console.log(data)
     return (
-        <div className="container position-relative mx-0"
-            style={deviceWidth > 450 ? {left: closeNav ? '80px' : '280px'}:{left: '80px'}}
-        >
-            <div className="row">
-              
-                    {data.map((item, index) => {
-                        return (
-                            <div className="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12" key={index}>
-                                <Link class="text-decoration-none" to={`/pages/product/detail/${item.id}`}>
-                                    <Card>
-                                    <Card.Img variant="top" src={config.image_path+item['image_url']}/>
-                                    <Card.Body>
-                                        <Card.Title className="text-nowrap">{item['name']}</Card.Title>
-                                        <Card.Text className="text-primary fw-bold">
-                                            {formatNumber(item['price'])}
-                                        </Card.Text>
-                                    </Card.Body>
-                                    </Card>
-                                </Link>
-                            </div>
-                        )
-                    })}
-            </div>
-        </div>
+        <>
+            {Object.keys(data).length > 1 ? (
+                <div className="container position-relative mx-0 px-0"
+                // style={deviceWidth > 450 ? {left: closeNav ? '80px' : '280px'}:{left: '80px'}}
+                    style={deviceWidth > 450 ? (closeNav ? {left: '80px', width: 'calc(100vw - 80px)'} : {left: '240px', width: 'calc(100vw - 240px)'})
+                    :
+                    {left: '0px', width: '100vw'}}
+                >
+                    <div className="row">   
+                        {data.map((item, index) => {
+                            return (
+                                <div className="col-xxl-2 col-xl-3 col-lg-3 col-md-4 col-sm-6 col-12 d-flex justify-content-center" key={index}>
+                                    <Link class="text-decoration-none" to={`/pages/product/detail/${item.id}`}>
+                                        <Card>
+                                        <Card.Img variant="top" src={config.image_path+item['image_url']}/>
+                                        <Card.Body>
+                                            <Card.Title className="text-nowrap fs-6">{item['name']}</Card.Title>
+                                            <Card.Text className="text-primary fw-bold">
+                                                {formatNumber(item['price'])}
+                                            </Card.Text>
+                                        </Card.Body>
+                                        </Card>
+                                    </Link>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+            ):(
+                <Loading/>
+            )}
+        </>
     )
 }
 

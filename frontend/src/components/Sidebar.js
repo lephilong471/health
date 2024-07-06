@@ -4,7 +4,7 @@ import {Link} from 'react-router-dom'
 import "../App.css"
 import SubMenu from './SubMenu'
 import { GlobalContext } from '../store/GlobalContext'
-import { config } from '../config'
+
 const Sidebar = () =>{
     // const [sidebar, setSidebar] = useState(false)
     const {closeNav, toggle} = useContext(GlobalContext)
@@ -14,7 +14,7 @@ const Sidebar = () =>{
             <div className="sidebarNav" style={{display: closeNav ? 'none': 'inline'}}>
                 <div className ="sidebarWrap">
                     <Link className="navIcon" to="#">
-                        <img src={`${config.image_path}/images/navbar.svg`} onClick={toggle} alt=''/>
+                        <img src='/images/navbar.svg' onClick={toggle} alt=''/>
                     </Link>
 
                     {SidebarData.map( (item, index) => {
@@ -28,11 +28,11 @@ const Sidebar = () =>{
                 </div>
             </div>
             
-            {closeNav &&
+            {closeNav && window.innerWidth > 450 &&
                 (
                     <div className='collapseNav' >
                         <Link className="navIcon" to="#">
-                            <img src={`${config.image_path}/images/navbar.svg`} onClick={toggle} alt=''/>
+                            <img src='/images/navbar.svg' onClick={toggle} alt=''/>
                         </Link>
                         
                         {SidebarData.map( (item, index) => {
@@ -40,14 +40,14 @@ const Sidebar = () =>{
                                 <>  
                                     {item.path !== '' && (
                                         <Link className="collapseIcon" to={item.path} key={index}>
-                                        <img src={config.image_path+item.icon} width={30} height={30} alt=''/>
+                                        <img src={item.icon} width={30} height={30} alt=''/>
                                         </Link>  
                                     )}
 
                                     {item.subNav && item.subNav.map((i, k) => {
                                         return(
                                             <Link className="collapseIcon" to={i.path} key={k}>
-                                                <img src={config.image_path+i.icon} width={30} height={30} alt=''/>
+                                                <img src={i.icon} width={30} height={30} alt=''/>
                                             </Link>
                                         )
                                     })}
@@ -60,7 +60,7 @@ const Sidebar = () =>{
                                 return(
                                     <>
                                         <Link className="collapseIcon" to={item.path} key={index}>
-                                            <img src={config.image_path+item.icon} width={30} height={30} alt=''/>
+                                            <img src={item.icon} width={30} height={30} alt=''/>
                                         </Link>
                                     </>
                                 )
