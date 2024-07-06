@@ -27,7 +27,9 @@ const PageDetail = () =>{
         <>
             {Object.keys(data).length > 1 ? (
                 <div className="container position-relative mx-0 py-4"
-                    style={window.innerWidth > 450 ? {left: closeNav ? '80px' : '280px'}: {left: '80px'}}
+                    style={window.innerWidth > 450 ? (closeNav ? {left: '80px', width: 'calc(100vw - 80px)'} : {left: '240px', width: 'calc(100vw - 240px)'})
+                    :
+                    {left: '0px', width: '100vw'}}
                 >
                     <div className="row">
                         <div className="col d-flex justify-content-start">
@@ -35,15 +37,15 @@ const PageDetail = () =>{
                         </div>
                     </div>
                     <div className="row">
-                        <div className="col-xxl-4 col-lg-4 col-md-6 col-sm-10 col-10 text-center my-2">
+                        <div className="col-xxl-4 col-lg-4 col-md-6 col-sm-12 col-12 text-center my-2">
                             <img width={200} className="border border-info" src={config.image_path+data['image_url']} alt=''/>
                         </div>
-                        <div className="col-xxl-6 col-lg-6 col-md-4 col-sm-10 col-10 text-start my-2">
+                        <div className="col-xxl-8 col-lg-8 col-md-6 col-sm-12 col-12 text-start my-2">
                             <h3>{data['detail']}</h3>
                             <h4>Giá:  <span className="text-primary">{formatNumber(data['price'])}</span> </h4>
                             <h4>Loại: {checkType(data['type'])}</h4>
                         </div>
-                        <div className="col-10 my-2 text-start">
+                        <div className="col-12 my-2 text-start">
                             <h3>Mô tả sản phẩm</h3>
                             <div style={{fontSize: '18px'}} dangerouslySetInnerHTML={{__html:data['description']}}/>
                         </div>
