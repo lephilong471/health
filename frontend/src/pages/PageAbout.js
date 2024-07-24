@@ -65,7 +65,7 @@ const PageAbout = () => {
                             Địa chỉ
                         </div>
                         <div className="back">
-                            Số 4, Nguyễn Văn Côn, Khu phố 2, Phường 2, Thành phố Gò Công, Tỉnh Tiền Giang.
+                            Phường 2, Thành phố Gò Công, Tỉnh Tiền Giang.
                         </div>
                     </div>
                 </div>

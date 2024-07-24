@@ -45,7 +45,7 @@
 .sidebarNav{
   background: rgb(194,250,237);
   background: linear-gradient(135deg, rgba(194,250,237,1) 0%, rgba(255,233,191,1) 50%, rgba(227,229,245,1) 100%);
-  width: 280px;
+  width: 240px;
   height:calc(100vh - 110px);
   display:flex;
   justify-content:center;
@@ -70,7 +70,7 @@
   justify-content:space-around;
   align-items:center;
   color: #000000;
-  padding: 10px 20px;
+  padding: 8px 18px;
   margin:20px 10px;
   list-style:none;
   text-decoration:none;
@@ -87,15 +87,15 @@
 }
 
 .sidebarLabel{
-  margin-left:16px;
-  font-size:20px;
+  /* margin-left:16px; */
+  font-size:18px;
   font-weight:bold;
 }
 
 .dropdown{
   background: #ffffff;
   margin: 20px 10px 20px 40px;
-  padding: 10px 20px;
+  padding: 8px 18px;
   display:flex;
   justify-content: space-around;
   align-items:center;
@@ -361,7 +361,7 @@
 }
 
 .welcome-container{
-  padding:0 0 20px 60px;
+  padding:0 0 20px 0;
 }
 
 .welcome-container .welcome-title{
@@ -423,7 +423,8 @@
   position:relative;
   height:calc(100vh - 110px);
   overflow-x:hidden; 
-  margin-left:60px;
+  /* margin-left:60px; */
+  margin:0 10px;
   z-index:1;
   display:flex;
   justify-content:center;
@@ -456,7 +457,7 @@
   font-size:30px;
   margin: 0 10px;
   position:absolute;
-  right:-25px;
+  right:-35px;
 }
 
 .admin-send-icon{
@@ -522,7 +523,7 @@
 .chat-input .chat-exit{
   transform:rotateY(180deg);
   font-size:20px;
-  margin: 0 10px;
+  margin: 0 25px 0 0;
 }
 
 .chat-input .chat-exit:hover{

@@ -95,9 +95,9 @@ const PageSupport = () => {
     }
 
     const handleSend = async () => {
-        if(messageSend === '') alert('Vui lòng nhập thông tin')
+        if(messageSend === '' || messageSend.match(/ /g).length === messageSend.length) alert('Vui lòng nhập thông tin')
         else{
-            const preprocess = messageSend.split('\n').join('<br/>')
+            const preprocess = messageSend.split('\n').join('<br/>').replaceAll(' ','&nbsp;')
             await addDoc(collection(db, 'support'),{
                 clientID: checkID,
                 client_message: preprocess,
@@ -140,7 +140,8 @@ const PageSupport = () => {
                     CB.style.height = `calc(100vh - 200px - ${scHeight}px + 44px`
                 }
                 else{
-                    CIM.style.height = '40px'
+                    // CIM.style.height = '40px'
+                    CIM.style.height = '44px'
                     CB.style.height = 'calc(100vh - 200px)'
                 }
             })
@@ -171,18 +172,19 @@ const PageSupport = () => {
                     <Modal.Title>Thông tin cơ bản</Modal.Title>
                 </Modal.Header>
 
-                <Modal.Body className="d-flex align-items-center">
-                    <div className="w-50">
-                        <input type = "text" name="code" className="p-1" placeholder="Nhập mã" onChange={handleChange}/>
-                        {check && (<div className="text-danger fst-italic">Mã không chứa khoảng trắng và các ký tự đặc biệt</div>)}
+                <Modal.Body>
+                    <div className="d-flex ">
+                        <input type = "text" name="code" placeholder="Nhập mã của bạn" onChange={handleChange}/>
+                        <div className="btn btn-info mx-2 text-light fw-bold" onClick={handleSubmit}>OK</div>
                     </div>
-        
-                    <div className="btn btn-info mx-2 text-light fw-bold" onClick={handleSubmit}>OK</div>
+                    {check && (<div className="text-danger fst-italic">Mã không chứa khoảng trắng và các ký tự đặc biệt</div>)}
+                  
                  
                 </Modal.Body>
                 <Modal.Footer>
-                    <div className="fst-italic">Nhập một mã bất kỳ gồm số hoặc chữ để hệ thống có thể nhận diện đó là bạn</div>
-                    <div><span className="text-warning fw-bold">Lưu ý: </span>Đặt mã dễ nhớ để bạn có thể xem câu trả lời từ Hệ thống khi truy cập vào đây</div>
+                    {/* <div className="fst-italic">Nhập một mã bất kỳ gồm số hoặc chữ để hệ thống có thể nhận diện đó là bạn</div> */}
+                    <div className="fst-italic">Nhập một mã bất kỳ gồm số hoặc chữ để nhận sự hỗ trợ</div>
+                    <div><span className="text-warning fw-bold">Lưu ý: </span>Đặt mã dễ nhớ để bạn có thể xem nội dung hỗ trợ khi truy cập vào đây</div>
                 </Modal.Footer>
             </Modal>
             ):(
@@ -214,8 +216,8 @@ const PageSupport = () => {
                     <div className="chat-input">
                         <ImExit className="chat-exit" onClick={handleExit}/>
                         <textarea type="text" ref={inputRef} className="chat-input-message" value={messageSend} name="message" onChange={inputMessage} placeholder="Nhập tin nhắn"/>
-                        <MdOutlineEmojiEmotions className="emoji-icon" onClick={() => setPicker(!picker)}/>
                         <RiSendPlaneFill className="send-icon" onClick={handleSend}/>
+                        <MdOutlineEmojiEmotions className="emoji-icon" onClick={() => setPicker(!picker)}/>
                         <EmojiPicker className="emoji-picker" skinTonesDisabled="true" open={picker} searchDisabled="true" emojiStyle="facebook" onEmojiClick={pickEmoji}/>
                     </div>
                 </div>

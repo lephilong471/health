@@ -9,7 +9,7 @@ const SubMenu = ({item}) =>{
     const showSubnav = () => setSubnav(!subnav)
     return (
         <>
-            <Link className = 'sidebarLink' to = {item.path} onClick = {item.subNav && showSubnav}>
+            <Link className = 'sidebarLink' to = {item.path} onClick = {item.subNav ? showSubnav : (window.innerWidth <= 450 ? toggle: null) }>
                 <div> 
                     <span className = 'sidebarLabel'>{item.title}</span>
                 </div>
@@ -22,7 +22,7 @@ const SubMenu = ({item}) =>{
             </Link>
             { subnav && item.subNav.map((subItem, subKey) => {
                 return (
-                    <Link className="dropdown" key={subKey} to={subItem.path} onClick={window.innerWidth < 450 ? toggle :null}>
+                    <Link className="dropdown" key={subKey} to={subItem.path} onClick={window.innerWidth <= 450 ? toggle :null}>
                         
                         <span className="sidebarLabel">
                             {subItem.title}

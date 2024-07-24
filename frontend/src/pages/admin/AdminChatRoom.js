@@ -67,7 +67,7 @@ const AdminChatRoom = () => {
     const handleSend = () => {
         if(messageSend === '') alert('Vui lòng nhập thông tin')
         else{
-            const preprocess = messageSend.split('\n').join('<br/>')
+            const preprocess = messageSend.split('\n').join('<br/>').replaceAll(' ','&nbsp;')
             updateDoc(doc(db,'support',reply),{
                 admin_message: preprocess,
                 updated_at: serverTimestamp()
@@ -95,7 +95,6 @@ const AdminChatRoom = () => {
     }
 
     const handleReply = (reply_id) => {
-        console.log(reply_id)
         setModal(!modal)
         setReply(reply_id)
     }
